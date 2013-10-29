@@ -18,6 +18,9 @@ struct Writer {
       exit(1);
     }
 
+    int broadcast = 1;
+    setsockopt(s, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
+
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
