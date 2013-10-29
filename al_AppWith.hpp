@@ -8,7 +8,7 @@
 
 #define QUEUE_LENGTH (3)
 
-template <typename PODTYPE>
+template <typename BASE, typename POD>
 struct AppWith : al::App {
 
   enum {
@@ -17,10 +17,10 @@ struct AppWith : al::App {
     LOCAL
   } mode;
 
-  PODTYPE* queue[QUEUE_LENGTH];
+  POD* queue[QUEUE_LENGTH];
   unsigned read_index, write_index;
 
-  PODTYPE& data() {
+  POD& data() {
     switch (mode) {
       case READER:
       case LOCAL:
@@ -35,7 +35,7 @@ struct AppWith : al::App {
     std::cout << "this AppWith<State> is local" << std::endl;
 
     // XXX
-    queue[0] = new PODTYPE();
+    queue[0] = new POD();
   }
 
   void init(const char* writer) {
@@ -49,7 +49,7 @@ struct AppWith : al::App {
     std::cout << "hostname is " << hostname << std::endl;
 
     // XXX
-    queue[0] = new PODTYPE();
+    queue[0] = new POD();
   }
 
   void poll() {}
