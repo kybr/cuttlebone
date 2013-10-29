@@ -1,9 +1,10 @@
-
 #include "Stuff.hpp"
 #include <openssl/sha.h>
 #include <unistd.h>
 #include <string.h>
 #include <cassert>
+
+int wait_time = 100000;
 
 int sha() {
   const unsigned char d[] = "Original String";
@@ -27,14 +28,14 @@ int main() {
     while (true) {
       sprintf(message, "%03u", n++);
       writer.send(message);
-      sleep(1);
+      usleep(wait_time);
     }
   } else {
     Reader reader;
     reader.init();
     while (true) {
       reader.poll();
-      sleep(1);
+      usleep(wait_time);
     }
   }
 }
