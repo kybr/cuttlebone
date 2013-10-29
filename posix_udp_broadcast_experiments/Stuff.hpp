@@ -1,13 +1,12 @@
 #ifndef __STUFF__
 #define __STUFF__
 
-#include <stdlib.h>     // exit()
 #include <arpa/inet.h>  // struct sockaddr_in
 #include <unistd.h>     // sleep()
+#include <cstring>      // linux
+#include <cstdlib>      // linux
+#include <cstdio>       // linux
 #include <string>
-#include <cstring> // linux
-#include <cstdlib> // linux
-#include <cstdio> // linux
 
 struct Writer {
   struct sockaddr_in address;
