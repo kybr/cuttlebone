@@ -5,13 +5,9 @@
 //   reader..
 
 #include <stdlib.h>
-#include <sys/socket.h>  //
-                         //#include <sys/types.h>
-                         //#include <sys/socket.h>
-//#include <netinet/in.h>
+#include <sys/socket.h>
 #include <arpa/inet.h>
 #include <time.h>
-//#include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -29,7 +25,7 @@ struct Writer {
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr("127.0.0.255");
+    address.sin_addr.s_addr = inet_addr("127.0.0.1");
     address.sin_port = htons(8888);
   }
 
@@ -42,7 +38,10 @@ struct Writer {
   }
 };
 
-struct Reader {};
+struct Reader {
+  void init() {}
+  void poll() {}
+};
 
 int main() {
   const char *message = "Hello, World!";
