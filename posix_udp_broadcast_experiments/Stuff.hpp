@@ -18,8 +18,8 @@ struct Writer {
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr("127.0.0.1");
     address.sin_port = htons(8888);
+    address.sin_addr.s_addr = inet_addr("127.0.0.1");
   }
 
   void send(std::string message) {
@@ -28,12 +28,44 @@ struct Writer {
       perror("sendto");
       exit(1);
     }
+    printf("sent: %s\n", message.c_str());
   }
 };
 
 struct Reader {
-  void init() {}
-  void poll() {}
+  struct sockaddr_in address;
+  int s;
+
+  void init() {
+    if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
+      perror("socket");
+      exit(1);
+    }
+
+    int broadcast = 1;
+    setsockopt(s, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
+
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_port = htons(8888);
+    address.sin_addr.s_addr = INADDR_ANY;
+
+    if (bind(s, (sockaddr *)&address, sizeof(sockaddr)) < 0) {
+      perror("bind");
+      exit(1);
+    }
+  }
+
+  void poll() {
+    char buf[256];
+    int n;
+    if ((n = recvfrom(s, buf, sizeof(buf) - 1, 0, 0, 0)) < 0) {
+      perror("recvfrom");
+      exit(1);
+    }
+    buf[n] = '\0';
+    printf("received: %s\n", buf);
+  }
 };
 
 #endif
