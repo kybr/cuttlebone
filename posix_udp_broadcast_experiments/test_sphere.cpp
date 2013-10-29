@@ -18,18 +18,23 @@ int main() {
   bool isWriter = (strncmp("photon", hostname, 256) == 0);
   printf("i am %s\n", isWriter ? "the writer" : "a reader");
 
-  char message[256];
-  Writer writer;
-  Reader reader;
+  if (isWriter) {
+    char message[256];
+    Writer writer;
+    writer.init();
 
-  writer.init();
-  reader.init();
-
-  unsigned n = 0;
-  while (true) {
-    sprintf(message, "%03u", n++);
-    writer.send(message);
-    reader.poll();
-    sleep(1);
+    unsigned n = 0;
+    while (true) {
+      sprintf(message, "%03u", n++);
+      writer.send(message);
+      sleep(1);
+    }
+  } else {
+    Reader reader;
+    reader.init();
+    while (true) {
+      reader.poll();
+      sleep(1);
+    }
   }
 }
