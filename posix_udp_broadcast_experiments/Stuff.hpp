@@ -5,6 +5,9 @@
 #include <arpa/inet.h>  // struct sockaddr_in
 #include <unistd.h>     // sleep()
 #include <string>
+#include <cstring> // linux
+#include <cstdlib> // linux
+#include <cstdio> // linux
 
 struct Writer {
   struct sockaddr_in address;
