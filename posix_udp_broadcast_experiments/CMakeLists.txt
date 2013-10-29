@@ -1,3 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 project(broadcast)
 add_executable(app app.cpp)
+add_executable(test_sphere test_sphere.cpp)
+set_target_properties(test_sphere PROPERTIES LINK_FLAGS -lcrypto)
