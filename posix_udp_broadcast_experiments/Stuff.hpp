@@ -12,7 +12,7 @@ struct Writer {
   struct sockaddr_in address;
   int s;
 
-  void init() {
+  void init(const char* ip = "127.0.0.1", int port = 8888) {
     if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
       perror("socket");
       exit(1);
@@ -20,8 +20,8 @@ struct Writer {
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_port = htons(8888);
-    address.sin_addr.s_addr = inet_addr("127.0.0.1");
+    address.sin_port = htons(port);
+    address.sin_addr.s_addr = inet_addr(ip);
   }
 
   void send(std::string message) {
@@ -38,7 +38,7 @@ struct Reader {
   struct sockaddr_in address;
   int s;
 
-  void init() {
+  void init(int port = 8888) {
     if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
       perror("socket");
       exit(1);
@@ -49,7 +49,7 @@ struct Reader {
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_port = htons(8888);
+    address.sin_port = htons(port);
     address.sin_addr.s_addr = INADDR_ANY;
 
     if (bind(s, (sockaddr *)&address, sizeof(sockaddr)) < 0) {

@@ -21,7 +21,7 @@ int main() {
   if (isWriter) {
     char message[256];
     Writer writer;
-    writer.init();
+    writer.init("192.168.0.255");
 
     unsigned n = 0;
     while (true) {
