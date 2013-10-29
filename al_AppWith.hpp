@@ -10,17 +10,28 @@
 
 template <typename PODTYPE>
 struct AppWith : al::App {
+
+  enum {
+    READER,
+    WRITER,
+    LOCAL
+  } mode;
+
   PODTYPE* queue[QUEUE_LENGTH];
-  bool isWriter, local;
-  unsigned read, write;
+  unsigned read_index, write_index;
 
-  AppWith() : read(0), write(1), isWriter(false) {}
-
-  PODTYPE& data() { return *queue[0]; }
+  PODTYPE& data() {
+    switch (mode) {
+      case READER:
+      case LOCAL:
+        return *queue[read_index];
+      case WRITER:
+        return *queue[write_index];
+    }
+  }
 
   void init() {
-    local = true;
-
+    mode = LOCAL;
     std::cout << "this AppWith<State> is local" << std::endl;
 
     // XXX
@@ -28,12 +39,10 @@ struct AppWith : al::App {
   }
 
   void init(const char* writer) {
-    local = false;
-
     char hostname[256];
     assert(gethostname(hostname, 256) >= 0);
-    isWriter = (strncmp(writer, hostname, 256) == 0);
-
+    bool isWriter = (strncmp(writer, hostname, 256) == 0);
+    mode = isWriter ? WRITER : READER;
     std::cout << "this AppWith<State> is "
               << (isWriter ? "the writer" : "a reader") << std::endl;
 
@@ -44,6 +53,7 @@ struct AppWith : al::App {
   }
 
   void poll() {}
+  void send() {}
 };
 
 #endif

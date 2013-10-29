@@ -10,12 +10,11 @@ struct StateApp : AppWith<State> {
   StateApp() {
     init(); // for local apps use this init()
     //init("quux.zzz"); // for distributed apps use this init()
-    if (! isWriter)
-      initWindow();
+    initWindow();
   }
 
   virtual void onAnimate(double dt) {
-    if (isWriter) {
+    if (mode == WRITER) {
       // calculate here, filling data()
       //
       send();
@@ -28,7 +27,7 @@ struct StateApp : AppWith<State> {
   }
 
   virtual void onDraw(Graphics& g, const Viewpoint&) {
-    if (isWriter) {}
+    if ((mode == READER) || (mode == LOCAL)) {}
     else {
       // draw stuff
       //
