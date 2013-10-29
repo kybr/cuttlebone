@@ -6,7 +6,7 @@ struct State {
   float data[N];
 };
 
-struct StateApp : AppWith<State> {
+struct StateApp : AppWith<StateApp,State> {
   StateApp() {
     init(); // for local apps use this init()
     //init("quux.zzz"); // for distributed apps use this init()

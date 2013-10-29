@@ -11,6 +11,10 @@
 template <typename BASE, typename POD>
 struct AppWith : al::App {
 
+  virtual void onAnimate(double dt) {
+    BASE::onAnimate(dt);
+  }
+
   enum {
     READER,
     WRITER,
