@@ -14,13 +14,13 @@ int main() {
   unsigned n = 0;
 
   thread foo([]() {
-    unsigned char received[N];
-    Reader<N> reader;
-    reader.init();
-    for (int k = 0; k < 10; k++) {
-      reader.poll(received);
-      printf(" %03u\n", received[0]);
-      usleep(WAIT);
+      unsigned char received[N];
+      Reader<N> reader;
+      reader.init();
+      for (int k = 0; k < 10; k++) {
+        reader.poll(received);
+        printf(" %03u\n", received[0]);
+        usleep(WAIT);
     }
   });
 
