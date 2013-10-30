@@ -26,23 +26,26 @@ int main() {
   printf("i am %s\n", hostname);
   bool isWriter = (strncmp("photon", hostname, 256) == 0);
   printf("i am %s\n", isWriter ? "the writer" : "a reader");
+  unsigned char message[256];
+
 
   if (isWriter) {
-    char message[256];
-    Writer writer;
+    Writer<256> writer;
     writer.init("192.168.0.255");
 
-    unsigned n = 0;
     while (!done) {
-      sprintf(message, "%03u", n++);
       writer.send(message);
+      printf("%03u", message[0]);
+      for (int i = 0; i < 256; i++)
+        message[i]++;
       usleep(wait_time);
     }
   } else {
-    Reader reader;
+    Reader<256> reader;
     reader.init();
     while (!done) {
-      reader.poll();
+      reader.poll(message);
+      printf("%03u", message[0]);
       usleep(wait_time);
     }
   }

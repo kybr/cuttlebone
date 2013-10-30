@@ -7,16 +7,15 @@
 #include <cstdlib>      // linux
 #include <cstdio>       // linux
 #include <string>
+#include <cassert>
 
+template <int N>
 struct Writer {
   struct sockaddr_in address;
   int s;
 
   void init(const char* ip = "127.0.0.1", int port = 8888) {
-    if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-      perror("socket");
-      exit(1);
-    }
+    assert((s = socket(AF_INET, SOCK_DGRAM, 0)) >= 0);
 
     int broadcast = 1;
     setsockopt(s, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
@@ -27,49 +26,34 @@ struct Writer {
     address.sin_addr.s_addr = inet_addr(ip);
   }
 
-  void send(std::string message) {
-    if (sendto(s, message.c_str(), message.size(), 0,
-               (struct sockaddr *)&address, sizeof(address)) < 0) {
-      perror("sendto");
-      exit(1);
-    }
-    printf("sent: %s\n", message.c_str());
+  void send(unsigned char* data) {
+    assert(sendto(s, data, N, 0, (struct sockaddr*)&address, sizeof(address)) >=
+           0);
   }
 };
 
+template <int N>
 struct Reader {
-  struct sockaddr_in address;
   int s;
 
   void init(int port = 8888) {
-    if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
-      perror("socket");
-      exit(1);
-    }
+    assert((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) >= 0);
 
     int broadcast = 1;
     setsockopt(s, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
+
+    struct sockaddr_in address;
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
     address.sin_addr.s_addr = INADDR_ANY;
 
-    if (bind(s, (sockaddr *)&address, sizeof(sockaddr)) < 0) {
-      perror("bind");
-      exit(1);
-    }
+    assert(bind(s, (sockaddr*)&address, sizeof(sockaddr)) >= 0);
   }
 
-  void poll() {
-    char buf[256];
-    int n;
-    if ((n = recvfrom(s, buf, sizeof(buf) - 1, 0, 0, 0)) < 0) {
-      perror("recvfrom");
-      exit(1);
-    }
-    buf[n] = '\0';
-    printf("received: %s\n", buf);
+  void poll(unsigned char* buffer) {
+    assert(recvfrom(s, buffer, N, 0, 0, 0) >= 0);
   }
 };
 

@@ -1,18 +1,21 @@
 #include "Stuff.hpp"
+#include <cassert>
 
 int main() {
-  char message[256];
-  Writer writer;
-  Reader reader;
+  unsigned char message[256];
+  Writer<256> writer;
+  Reader<256> reader;
 
   writer.init();
   reader.init();
 
   unsigned n = 0;
   while (true) {
-    sprintf(message, "%03u", n++);
+    for (int i = 0; i < 256; i++)
+      message[i]++;
     writer.send(message);
-    reader.poll();
+    reader.poll(message);
+    printf("%03u\n", message[0]);
     sleep(1);
   }
 }
