@@ -30,7 +30,7 @@ int main() {
 
     while (true) {
       writer.send(sent);
-      printf("%03u", sent[0]);
+      printf("%03u\n", sent[0]);
       for (int i = 0; i < N; i++) sent[i]++;
       usleep(wait_time);
     }
@@ -41,7 +41,7 @@ int main() {
     usleep(wait_time);
     while (true) {
       reader.poll(received);
-      printf("%03u", received[0]);
+      printf("%03u\n", received[0]);
       usleep(wait_time);
     }
   }
