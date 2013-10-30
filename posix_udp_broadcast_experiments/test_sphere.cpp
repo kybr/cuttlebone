@@ -38,7 +38,6 @@ int main() {
     unsigned char received[N];
     Reader<N> reader;
     reader.init();
-    usleep(wait_time);
     while (true) {
       reader.poll(received);
       printf("%03u\n", received[0]);
