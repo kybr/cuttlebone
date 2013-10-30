@@ -6,6 +6,11 @@
 
 int wait_time = 100000;
 
+static bool done = false;
+void quit(int) {
+  done = true;
+}
+
 int sha() {
   const unsigned char d[] = "Original String";
   unsigned char md[SHA_DIGEST_LENGTH];
@@ -13,6 +18,8 @@ int sha() {
 }
 
 int main() {
+  signal(SIGINT, quit);
+
   char hostname[256];
   assert(gethostname(hostname, 256) >= 0);
   printf("i am %s\n", hostname);
@@ -25,7 +32,7 @@ int main() {
     writer.init("192.168.0.255");
 
     unsigned n = 0;
-    while (true) {
+    while (!done) {
       sprintf(message, "%03u", n++);
       writer.send(message);
       usleep(wait_time);
@@ -33,7 +40,7 @@ int main() {
   } else {
     Reader reader;
     reader.init();
-    while (true) {
+    while (!done) {
       reader.poll();
       usleep(wait_time);
     }
