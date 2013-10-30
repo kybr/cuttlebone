@@ -3,14 +3,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <cassert>
-#include <signal.h>
+
+#define N (256)
 
 int wait_time = 100000;
-
-static bool done = false;
-void quit(int) {
-  done = true;
-}
 
 int sha() {
   const unsigned char d[] = "Original String";
@@ -19,33 +15,33 @@ int sha() {
 }
 
 int main() {
-  signal(SIGINT, quit);
 
   char hostname[256];
   assert(gethostname(hostname, 256) >= 0);
   printf("i am %s\n", hostname);
   bool isWriter = (strncmp("photon", hostname, 256) == 0);
   printf("i am %s\n", isWriter ? "the writer" : "a reader");
-  unsigned char message[256];
 
+  unsigned char sent[N];
+  unsigned char received[N];
 
   if (isWriter) {
-    Writer<256> writer;
+    Writer<N> writer;
     writer.init("192.168.0.255");
 
-    while (!done) {
-      writer.send(message);
-      printf("%03u", message[0]);
-      for (int i = 0; i < 256; i++)
-        message[i]++;
+    while (true) {
+      writer.send(sent);
+      printf("%03u", sent[0]);
+      for (int i = 0; i < N; i++) sent[i]++;
       usleep(wait_time);
     }
   } else {
-    Reader<256> reader;
+    Reader<N> reader;
     reader.init();
-    while (!done) {
-      reader.poll(message);
-      printf("%03u", message[0]);
+    usleep(wait_time);
+    while (true) {
+      reader.poll(received);
+      printf("%03u", received[0]);
       usleep(wait_time);
     }
   }
