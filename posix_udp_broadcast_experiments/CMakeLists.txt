@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(broadcast)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+list(APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
 add_executable(app app.cpp)
 find_package(Crypto REQUIRED)
 include_directories(${CRYPTO_INCLUDE_DIR})

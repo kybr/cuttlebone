@@ -1,7 +1,9 @@
 #include "Stuff.hpp"
 #include <cassert>
+#include <thread>
 
 #define N (1024)
+#define WAIT (100000)
 
 int main() {
   unsigned char sent[N];
@@ -21,9 +23,9 @@ int main() {
     printf("%03u ->", sent[0]);
     for (int i = 0; i < N; i++)
       sent[i]++;
-    usleep(400000);
+    usleep(WAIT);
     reader.poll(received);
     printf(" %03u\n", received[0]);
-    usleep(400000);
+    usleep(WAIT);
   }
 }
