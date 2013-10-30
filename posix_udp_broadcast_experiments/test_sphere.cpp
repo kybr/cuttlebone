@@ -6,7 +6,7 @@
 
 #define N (256)
 
-int wait_time = 100000;
+int wait_time = 1000000;
 
 int sha() {
   const unsigned char d[] = "Original String";
@@ -22,12 +22,11 @@ int main() {
   bool isWriter = (strncmp("photon", hostname, 256) == 0);
   printf("i am %s\n", isWriter ? "the writer" : "a reader");
 
-  unsigned char sent[N];
-  unsigned char received[N];
-
   if (isWriter) {
+    unsigned char sent[N];
     Writer<N> writer;
     writer.init("192.168.0.255");
+    for (int i = 0; i < N; i++) sent[i] = i;
 
     while (true) {
       writer.send(sent);
@@ -36,6 +35,7 @@ int main() {
       usleep(wait_time);
     }
   } else {
+    unsigned char received[N];
     Reader<N> reader;
     reader.init();
     usleep(wait_time);
