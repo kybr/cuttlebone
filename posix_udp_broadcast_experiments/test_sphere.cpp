@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <cassert>
+#include <signal.h>
 
 int wait_time = 100000;
 
