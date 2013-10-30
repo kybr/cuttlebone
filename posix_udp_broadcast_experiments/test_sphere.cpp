@@ -4,9 +4,9 @@
 #include <string.h>
 #include <cassert>
 
-#define N (256)
+#define N (1024)
 
-int wait_time = 1000000;
+int wait_time = 500000;
 
 int sha() {
   const unsigned char d[] = "Original String";
