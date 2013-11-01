@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 project(broadcast)
 
+set(CMAKE_CXX_FLAGS                "-Wall -std=c++11")
+set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
+set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
-list(APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
+#list(APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
 
 find_package(Crypto REQUIRED)
 include_directories(${CRYPTO_INCLUDE_DIR})
@@ -16,5 +22,10 @@ add_executable(broadcast test/broadcast.cpp)
 target_link_libraries(broadcast ${CRYPTO_LIBRARIES})
 add_executable(selector test/selector.cpp)
 target_link_libraries(selector ${CRYPTO_LIBRARIES})
+
+
 add_executable(timer test/timer.cpp)
 target_link_libraries(timer ${CRYPTO_LIBRARIES})
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+target_link_libraries(timer -lrt)
+endif()

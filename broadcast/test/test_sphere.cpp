@@ -8,7 +8,7 @@
 
 int wait_time = 500000;
 
-int sha() {
+void sha() {
   const unsigned char d[] = "Original String";
   unsigned char md[SHA_DIGEST_LENGTH];
   SHA1(d, sizeof(d) - 1, md);

@@ -10,7 +10,6 @@ int main() {
   Writer<N> writer;
   writer.init();
   for (int i = 0; i < N; i++) sent[i] = i;
-  unsigned n = 0;
 
   while (true) {
     writer.send(sent);
