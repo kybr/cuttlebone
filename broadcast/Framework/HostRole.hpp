@@ -1,6 +1,11 @@
 #ifndef __HOSTROLE__
 #define __HOSTROLE__
 
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 const char* data[] = {"gr11",  // this first element is the broadcaster hostname
                       "gr09", "gr10", "gr14", "gr12", "gr13", "gr07",
                       "gr01", "gr04", "gr05", "gr06", "gr08", "photon", };
