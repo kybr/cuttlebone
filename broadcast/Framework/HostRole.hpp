@@ -23,7 +23,7 @@ struct HostRole {
     } else {
       bool foundHostname = false;
       for (int i = 1; i < (sizeof(data) / sizeof(data[0])); i++)
-        if (strncmp(data[1], hostname, 256) == 0) foundHostname = true;
+        if (strncmp(data[i], hostname, 256) == 0) foundHostname = true;
       if (foundHostname) {
         isBroadcaster = false;
         isSelector = true;
