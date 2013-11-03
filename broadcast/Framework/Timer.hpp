@@ -34,7 +34,7 @@ struct Timer {
   struct itimerspec timer_settings;
   struct sigevent sevp;
 
-  void start(float period) {
+  void start(unsigned period) {
     that = this;
     sevp.sigev_notify = SIGEV_SIGNAL;
     sevp.sigev_signo = SIGUSR1;
@@ -43,9 +43,9 @@ struct Timer {
     signal(SIGUSR1, function);
     assert(timer_create(CLOCK_REALTIME, &sevp, &timerid) == 0);
 
-    int t = (int)period;
+    int t = period / 1000000;
     timer_settings.it_interval.tv_sec = t;
-    timer_settings.it_interval.tv_nsec = (period - t) * 1000000000;
+    timer_settings.it_interval.tv_nsec = (t % 1000000) * 1000;
     timer_settings.it_value.tv_sec = 0;
     timer_settings.it_value.tv_nsec = 1;
     assert(timer_settime(timerid, 0, &timer_settings, 0) == 0);
@@ -63,10 +63,10 @@ struct Timer {
 
   dispatch_source_t timer;
 
-  void start(float period) {
+  void start(unsigned period) {
     that = this;
-    uint64_t interval = period * 1e9f;
-    uint64_t leyway = 1000000ULL;
+    uint64_t interval = period * 1000ULL;
+    uint64_t leyway = 1000ULL;
     dispatch_queue_t queue =
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0,
