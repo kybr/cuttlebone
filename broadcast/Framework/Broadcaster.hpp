@@ -12,17 +12,18 @@
 
 struct Broadcaster {
   struct sockaddr_in address;
-  int s;
+  int fileDescriptor;
   unsigned packetSize;
 
-  void init(unsigned packetSize = 512, const char* ip = "127.0.0.1",
-            int port = 8888) {
+  void init(unsigned packetSize, const char* ip, int port) {
+
     this->packetSize = packetSize;
 
-    assert((s = socket(AF_INET, SOCK_DGRAM, 0)) >= 0);
+    assert((fileDescriptor = socket(AF_INET, SOCK_DGRAM, 0)) >= 0);
 
     int broadcast = 1;
-    setsockopt(s, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
+    setsockopt(fileDescriptor, SOL_SOCKET, SO_BROADCAST, &broadcast,
+               sizeof(broadcast));
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
@@ -31,8 +32,8 @@ struct Broadcaster {
   }
 
   void send(unsigned char* data) {
-    assert(sendto(s, data, packetSize, 0, (struct sockaddr*)&address,
-                  sizeof(address)) >= 0);
+    assert(sendto(fileDescriptor, data, packetSize, 0,
+                  (struct sockaddr*)&address, sizeof(address)) >= 0);
   }
 };
 

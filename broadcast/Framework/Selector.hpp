@@ -16,7 +16,7 @@ struct Selector {
   int packetSize, timeout, port;
   bool done;
 
-  void start(int packetSize = 512, int timeout = 999999, int port = 8888) {
+  void start(unsigned packetSize, unsigned timeout, unsigned port) {
     done = false;
     this->packetSize = packetSize;
     this->timeout = timeout;
@@ -25,11 +25,6 @@ struct Selector {
   }
 
   void init() {
-
-    printf("packetSize:%u ", packetSize);
-    printf("timeout:%u ", timeout);
-    printf("port:%u ", port);
-    printf("\n");
 
     int fileDescriptor;
     if ((fileDescriptor = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
