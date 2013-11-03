@@ -4,17 +4,22 @@
 #include "Framework/Timer.hpp"
 #include <openssl/sha.h>
 
-void sha() {
-  const unsigned char d[] = "Original String";
+struct Checksum {
   unsigned char md[SHA_DIGEST_LENGTH];
-  SHA1(d, sizeof(d) - 1, md);
-}
+  void print() {
+    for (int i = 0; i < SHA_DIGEST_LENGTH; i++) printf("%02x", md[i]);
+    printf("\n");
+  }
+  void checksum(unsigned char* data, unsigned size) { SHA1(data, size, md); }
+};
 
-struct App : HostRole, Selector<App>, Broadcaster, Timer {
+struct App : HostRole, Selector<App>, Broadcaster, Timer, Checksum {
   unsigned char* buffer;
   unsigned char* b;
+  unsigned packetSize;
   void init(unsigned packetSize, float rate, unsigned timeout, const char* ip,
             unsigned port) {
+    this->packetSize = packetSize;
     buffer = new unsigned char[packetSize];
     b = new unsigned char[packetSize];
     HostRole::init();
@@ -26,12 +31,18 @@ struct App : HostRole, Selector<App>, Broadcaster, Timer {
   }
 
   void onTimer() {
+    checksum(b, packetSize);
+    print();
     send(b);
     b[0]++;
     printf("onTimer(): %03u\n", b[0]);
   }
 
-  void onNewBuffer() { printf("onNewBuffer(): %03u\n", buffer[0]); }
+  void onNewBuffer() {
+    checksum(buffer, packetSize);
+    print();
+    printf("onNewBuffer(): %03u\n", buffer[0]);
+  }
 };
 
 int main(int argc, char* argv[]) {
