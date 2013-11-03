@@ -1,8 +1,18 @@
-# this experiment depends on mat201b2013 #
+# App With State
 
-    cd mat201b2013
-    git clone git@spectrum.mat.ucsb.edu:app_with_state.git
-    cd app_with_state
-    ./copy_app_with
-    cd ..
-    ./buildandrun.sh app_with_state/test.cpp
+here i'm trying to make a system for distributing application state information
+to a all hosts on a small, simple network using broadcast ip. my hope is that
+this system will be used in the AlloSphere and on Cuttlefish.
+
+## dependencies
+
+i use c++11, so you'll need a compiler that supports it.
+
+## building
+
+    mkdir build
+    cd build
+    cmake ..
+    make
+    ./app
+
