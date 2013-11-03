@@ -1,19 +1,29 @@
-#include "Framework/Stuff.hpp"
-#include <cassert>
-using namespace std;
+#include "Framework/Timer.hpp"
+#include "Framework/Broadcaster.hpp"
 
-#define N (7000)
-#define WAIT (100000)
+unsigned char* buffer;
 
-int main() {
-  unsigned char sent[N];
-  Writer<N> writer;
-  writer.init();
-  for (int i = 0; i < N; i++) sent[i] = i;
-
-  while (true) {
-    writer.send(sent);
-    for (int i = 0; i < N; i++) sent[i]++;
-    usleep(WAIT);
+struct App : Timer, Broadcaster {
+  void onTimer() {
+    for (int i = 0; i < packetSize; i++) buffer[i]++;
+    send(buffer);
+    printf("%03u\n", buffer[0]);
   }
+};
+
+int main(int argc, char* argv[]) {
+  unsigned packetSize = 512;
+  const char* ip = "127.0.0.1";
+  unsigned port = 8888;
+  if (argc > 1) packetSize = atoi(argv[1]);
+  if (argc > 2) ip = argv[2];
+  if (argc > 3) port = atoi(argv[2]);
+
+  buffer = new unsigned char[packetSize];
+  for (int i = 0; i < packetSize; i++) buffer[i] = (unsigned char)(i & 0xFF);
+
+  App app;
+  app.init(packetSize, ip, port);
+  app.start(1.0f);
+  getchar();
 }
