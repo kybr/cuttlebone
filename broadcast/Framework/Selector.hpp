@@ -17,6 +17,7 @@ struct Selector {
   bool done;
 
   void start(int packetSize = 512, int timeout = 999999, int port = 8888) {
+    done = false;
     this->packetSize = packetSize;
     this->timeout = timeout;
     this->port = port;
@@ -25,7 +26,10 @@ struct Selector {
 
   void init() {
 
-    printf("packetSize:%u timeout:%u port:%u\n", packetSize, timeout, port);
+    printf("packetSize:%u ", packetSize);
+    printf("timeout:%u ", timeout);
+    printf("port:%u ", port);
+    printf("\n");
 
     int fileDescriptor;
     if ((fileDescriptor = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
@@ -33,8 +37,8 @@ struct Selector {
       exit(-1);
     }
 
-    //int broadcast = 1;
-    //if (setsockopt(fileDescriptor, SOL_SOCKET, SO_BROADCAST, &broadcast,
+    // int broadcast = 1;
+    // if (setsockopt(fileDescriptor, SOL_SOCKET, SO_BROADCAST, &broadcast,
     //               sizeof(broadcast)) == -1) {
     //  perror("setsockopt");
     //  exit(-1);
@@ -57,9 +61,9 @@ struct Selector {
       FD_SET(fileDescriptor, &fileDescriptorSet);
 
       struct timeval tv = {0, timeout};  // sec, usec
-      //printf("BEFORE: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
+      // printf("BEFORE: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
       int rv = select(fileDescriptor + 1, &fileDescriptorSet, 0, 0, &tv);
-      //printf("AFTER: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
+      // printf("AFTER: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
 
       // XXX so is tv now the actual time that select waited?
 
