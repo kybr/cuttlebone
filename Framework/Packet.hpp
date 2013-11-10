@@ -1,15 +1,7 @@
 #ifndef __PACKET__
 #define __PACKET__
 
-// template <typename T>
-// struct UnionOf {
-//   union {
-//     T data;
-//     char byte[sizeof(T)];
-//   };
-// };
-
-#include <string.h>
+#include <string.h>  // for memcpy
 
 template <unsigned SIZE>
 struct Packet {
