@@ -34,6 +34,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   target_link_libraries(queue -lpthread)
 endif()
 
+add_executable(receive test/receive.cpp)
+target_link_libraries(receive ${CRYPTO_LIBRARIES})
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  target_link_libraries(receive -lrt)
+  target_link_libraries(receive -lpthread)
+endif()
+
 add_executable(packet test/packet.cpp)
 target_link_libraries(packet ${CRYPTO_LIBRARIES})
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
