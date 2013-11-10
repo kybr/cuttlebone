@@ -57,7 +57,7 @@ struct Receiver {
       if (bytesReceived == -1) {
         perror("recvfrom");
         return false;
-      } else if (bytesReceived != packetSize) {
+      } else if (bytesReceived != (int)packetSize) {
         printf("Received less than expected\n");
         return false;
       } else {
