@@ -3,6 +3,7 @@
 #include <unistd.h>  // usleep
 #include <iostream>  // cout
 #include <thread>
+#include <string.h>
 using namespace std;
 
 //#include <cstddef>
