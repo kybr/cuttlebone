@@ -1,16 +1,27 @@
 #ifndef __PACKET__
 #define __PACKET__
 
+// template <typename T>
+// struct UnionOf {
+//   union {
+//     T data;
+//     char byte[sizeof(T)];
+//   };
+// };
+
+#include <string.h>
+
 template <unsigned SIZE>
 struct Packet {
   struct Header {
     unsigned frameNumber, partNumber, partSize, totalPartCount;
   };
   enum {
+    HEADER_SIZE = sizeof(Header),
     DATA_SIZE = SIZE - sizeof(Header),
   };
   Header header;
-  char data[DATA_SIZE];
+  char byte[DATA_SIZE];
 };
 
 template <typename STATE, typename PACKET>
@@ -23,18 +34,11 @@ struct PacketMaker {
   const STATE& state;
   unsigned frameNumber, partNumber;
 
-  struct StateUnion {
-    union {
-      STATE state;
-      char data[sizeof(STATE)];
-    };
-  };
-
   PacketMaker(const STATE& state, unsigned frameNumber)
       : state(state), frameNumber(frameNumber), partNumber(0) {}
 
   bool fill(PACKET& packet) {
-    if (partNumber == TOTAL_PART_COUNT) return false;
+    if (partNumber >= TOTAL_PART_COUNT) return false;
 
     packet.header.totalPartCount = TOTAL_PART_COUNT;
     packet.header.frameNumber = frameNumber;
@@ -44,9 +48,9 @@ struct PacketMaker {
     else
       packet.header.partSize = PACKET::DATA_SIZE;
 
-    //
-    // XXX - need to memcpy
-    //
+    memcpy(packet.byte,
+           (void*)(((unsigned long)&state) + (partNumber * PACKET::DATA_SIZE)),
+           packet.header.partSize);
 
     partNumber++;
     return true;
@@ -72,6 +76,11 @@ struct PacketTaker {
     for (unsigned i = 0; i < TOTAL_PART_COUNT; ++i)
       if (part[i] != 1) foundAll = false;
     if (foundAll) return false;
+
+    memcpy((void*)(((unsigned long)&state) +
+                   (packet.header.partNumber * PACKET::DATA_SIZE)),
+           packet.byte, packet.header.partSize);
+
     part[packet.header.partNumber] = 1;
     return true;
   }
