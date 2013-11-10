@@ -19,7 +19,7 @@ struct App : Timer, Broadcaster, Checksum {
 
 int main(int argc, char* argv[]) {
   unsigned packetSize = 1024;
-  unsigned timerPeriod = 800000;
+  float timerPeriod = 0.8f;
   const char* ip = "127.0.0.1";
   unsigned port = 8888;
   if (argc > 1) packetSize = atoi(argv[1]);
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
   if (argc > 4) port = atoi(argv[4]);
 
   printf("usage: %s packetSize timerPeriod ip port\n", argv[0]);
-  printf("broadcasting %u bytes to %s:%u every %uus\n", packetSize, ip, port, timerPeriod);
+  printf("broadcasting %u bytes to %s:%u every %f seconds\n", packetSize, ip, port, timerPeriod);
   printf("#   | sha1 sum\n");
 
   buffer = new unsigned char[packetSize];

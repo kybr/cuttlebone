@@ -16,14 +16,14 @@ struct App : Selector<App>, Checksum {
 
 int main(int argc, char* argv[]) {
   unsigned packetSize = 1024;
-  unsigned selectTimeout = 810000;
+  float selectTimeout = 0.81f;
   unsigned port = 8888;
   if (argc > 1) packetSize = atoi(argv[1]);
-  if (argc > 2) selectTimeout = atoi(argv[2]);
+  if (argc > 2) selectTimeout = atof(argv[2]);
   if (argc > 3) port = atoi(argv[3]);
 
   printf("usage: %s packetSize selectTimeout port\n", argv[0]);
-  printf("selecting %u bytes from port %u with %uus timeout\n", packetSize, port, selectTimeout);
+  printf("selecting %u bytes from port %u with %f second timeout\n", packetSize, port, selectTimeout);
   printf("#   | sha1 sum\n");
 
   App app;

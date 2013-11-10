@@ -13,13 +13,14 @@
 template <typename APP>
 struct Selector {
   std::thread t;
-  int packetSize, timeout, port;
+  int packetSize, port;
+  float timeOut;
   bool done;
 
-  void start(unsigned packetSize, unsigned timeout, unsigned port) {
+  void start(unsigned packetSize, float timeOut, unsigned port) {
     done = false;
     this->packetSize = packetSize;
-    this->timeout = timeout;
+    this->timeOut = timeOut;
     this->port = port;
     t = std::thread(&Selector::init, this);
   }
@@ -55,7 +56,14 @@ struct Selector {
       FD_ZERO(&fileDescriptorSet);
       FD_SET(fileDescriptor, &fileDescriptorSet);
 
-      struct timeval tv = {0, timeout};  // sec, usec
+      int seconds = (int)timeOut;
+      int microseconds = (timeOut - (int)timeOut) * 1000000;
+      if (microseconds > 999999)
+        microseconds = 999999;
+
+      struct timeval tv; // = {0, timeOut};  // sec, usec
+      tv.tv_sec = seconds;
+      tv.tv_usec = microseconds;
       // printf("BEFORE: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
       int rv = select(fileDescriptor + 1, &fileDescriptorSet, 0, 0, &tv);
       // printf("AFTER: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
