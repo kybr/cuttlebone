@@ -13,8 +13,8 @@ int main(int argc, char* argv[]) {
   if (argc > 3) port = atoi(argv[3]);
 
   printf("usage: %s packetSize timeOut port\n", argv[0]);
-  printf("receiving %u bytes from on port %u every %f seconds\n", packetSize, port,
-         timeOut);
+  printf("receiving %u bytes from on port %u every %f seconds\n", packetSize,
+         port, timeOut);
   printf("#   | sha1 sum\n");
 
   Checksum c;

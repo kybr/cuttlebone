@@ -4,9 +4,7 @@
 unsigned char* buffer;
 
 struct App : Timer {
-  void onTimer() {
-    printf("this happened\n");
-  }
+  void onTimer() { printf("this happened\n"); }
 };
 
 int main(int argc, char* argv[]) {

@@ -78,8 +78,7 @@ struct Simulator {
           while (packetMaker.fill(p))
             broadcaster.send((unsigned char*)&p);
           frame++;
-        }
-        else 
+        } else
           usleep(1000);
       }
     });
@@ -131,7 +130,8 @@ struct Renderer {
         while (!packetTaker.isComplete()) {
           if (receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
             if (!packetTaker.take(p)) {
-              // got a part from an unexpected frame before we finished this frame
+              // got a part from an unexpected frame before we finished this
+              // frame
               printf("lost frame\n");
               goto ABORT_FRAME;
             }
@@ -166,12 +166,10 @@ struct Renderer {
           printf("\n");
 
           onRender(state);
-        }
-        else
+        } else
           usleep(1000);
       }
     });
-  
 
     waitingToStart = false;
     getchar();

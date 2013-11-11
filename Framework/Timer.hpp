@@ -45,8 +45,7 @@ struct Timer {
 
     int seconds = (int)period;
     int nanoseconds = (period - (int)period) * 1000000000;
-    if (nanoseconds > 999999999)
-      nanoseconds = 999999999;
+    if (nanoseconds > 999999999) nanoseconds = 999999999;
 
     timer_settings.it_interval.tv_sec = seconds;
     timer_settings.it_interval.tv_nsec = nanoseconds;

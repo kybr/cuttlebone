@@ -23,7 +23,8 @@ int main(int argc, char* argv[]) {
   if (argc > 3) port = atoi(argv[3]);
 
   printf("usage: %s packetSize selectTimeout port\n", argv[0]);
-  printf("selecting %u bytes from port %u with %f second timeout\n", packetSize, port, selectTimeout);
+  printf("selecting %u bytes from port %u with %f second timeout\n", packetSize,
+         port, selectTimeout);
   printf("#   | sha1 sum\n");
 
   App app;

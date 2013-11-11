@@ -7,7 +7,7 @@ unsigned char* buffer;
 struct App : Timer, Broadcaster, Checksum {
   void onTimer() {
     checksum(buffer, packetSize);
-//    printf("\033[u\033[2K\033[s");
+    //    printf("\033[u\033[2K\033[s");
     printf("%03u | ", buffer[0]);
     print();
     printf("\n");
@@ -28,7 +28,8 @@ int main(int argc, char* argv[]) {
   if (argc > 4) port = atoi(argv[4]);
 
   printf("usage: %s packetSize timerPeriod ip port\n", argv[0]);
-  printf("broadcasting %u bytes to %s:%u every %f seconds\n", packetSize, ip, port, timerPeriod);
+  printf("broadcasting %u bytes to %s:%u every %f seconds\n", packetSize, ip,
+         port, timerPeriod);
   printf("#   | sha1 sum\n");
 
   buffer = new unsigned char[packetSize];

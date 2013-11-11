@@ -36,14 +36,13 @@ struct Receiver {
     FD_ZERO(&fileDescriptorSet);
     FD_SET(fileDescriptor, &fileDescriptorSet);
 
-      int seconds = (int)timeOut;
-      int microseconds = (timeOut - (int)timeOut) * 1000000;
-      if (microseconds > 999999)
-        microseconds = 999999;
+    int seconds = (int)timeOut;
+    int microseconds = (timeOut - (int)timeOut) * 1000000;
+    if (microseconds > 999999) microseconds = 999999;
 
-      struct timeval tv; // = {0, timeOut};  // sec, usec
-      tv.tv_sec = seconds;
-      tv.tv_usec = microseconds;
+    struct timeval tv;  // = {0, timeOut};  // sec, usec
+    tv.tv_sec = seconds;
+    tv.tv_usec = microseconds;
 
     // printf("BEFORE: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
     int rv = select(fileDescriptor + 1, &fileDescriptorSet, 0, 0, &tv);
