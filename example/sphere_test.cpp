@@ -1,3 +1,4 @@
+#include "Framework/HostRole.hpp"
 #include "Framework/Packet.hpp"
 #include "Framework/Checksum.hpp"
 #include "Framework/Time.hpp"
@@ -21,157 +22,170 @@ struct State {
   void zero() { memset(this, 0, sizeof(State)); }
 };
 
-int main(int argc, char* argv[]) {
-  thread simulate, broadcast, receive, render;
+struct Simulator {
 
-  Queue<State> simulateBroadcast, receiveRender;
+  void onSimulate(State& state) {
+    //
+    // XXX - do something interesting
+    //
+    usleep(16666);
+  }
 
-  unsigned simulateBroadcastWasFull = 0;
-  unsigned simulateBroadcastWasEmpty = 0;
-  unsigned receiveRenderWasFull = 0;
-  unsigned receiveRenderWasEmpty = 0;
+  void run() {
+    Queue<State> simulateBroadcast;
+    bool waitingToStart = true, done = false;
 
-  bool waitingToStart = true, done = false;
-
-  simulate = thread([&]() {
-    Timestamp<> t;
-    // Checksum c;
-    State state;
-    state.zero();
-    while (waitingToStart)
-      usleep(1000);
-
-    while (!done) {
-      sprintf(state.data, "%lf | %u", t.stamp(), state.n);
-      // c.checksum((unsigned char*)&state, sizeof(State));
-      // c.print();
-      // printf("\n");
-      if (simulateBroadcast.push(state)) {
-        state.n++;
-      } else
-        simulateBroadcastWasFull++;
-      usleep(16666);
-    }
-  });
-
-  broadcast = thread([&]() {
-    // Stopwatch<> stopwatch;
-    Broadcaster broadcaster;
-    broadcaster.init(PACKET_SIZE, "192.168.1.255", 8888);
-    // broadcaster.init(PACKET_SIZE, "127.0.0.1", 8888);
-    Packet<PACKET_SIZE> p;
-    State state;
-    int frame = 0;
-    while (waitingToStart)
-      usleep(1000);
-
-    while (!done) {
-      if (simulateBroadcast.pop(state)) {  // XXX while() for greed
-
-        // stopwatch.tic();
-        PacketMaker<State, Packet<PACKET_SIZE> > packetMaker(state, frame);
-        while (packetMaker.fill(p))
-          broadcaster.send((unsigned char*)&p);
-        // printf("frame %u took %f seconds to broadcast\n", frame,
-        // stopwatch.toc());
-        frame++;
-
-      } else {
-        simulateBroadcastWasEmpty++;
+    thread simulate([&]() {
+      Timestamp<> t;
+      Checksum c;
+      State state;
+      state.zero();
+      while (waitingToStart)
         usleep(1000);
+
+      while (!done) {
+        onSimulate(state);
+
+        sprintf(state.data, "%lf | %u", t.stamp(), state.n);
+        printf("%s | ", state.data);
+        c.checksum((unsigned char*)&state, sizeof(State));
+        c.print();
+        printf("\n");
+
+        simulateBroadcast.push(state);
       }
-    }
-  });
+    });
 
-  receive = thread([&]() {
-    // Stopwatch<> stopwatch;
-    Receiver receiver;
-    receiver.init(8888);
-    Packet<PACKET_SIZE> p;
-    State state;
-    while (waitingToStart)
-      usleep(1000);
-
-    while (!done) {
-      /*
-            if (p.header.frameNumber > 0)
-              printf("frame %u took %f seconds to receive\n",
-         p.header.frameNumber,
-                     stopwatch.toc());
-              */
-      if (!receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
+    thread broadcast([&]() {
+      Broadcaster broadcaster;
+      broadcaster.init(PACKET_SIZE, "127.0.0.1", 8888);
+      Packet<PACKET_SIZE> p;
+      State state;
+      int frame = 0;
+      while (waitingToStart)
         usleep(1000);
-        continue;
-      }
 
-      // wait until we're at the begining of a frame
-      if (p.header.partNumber != 0)
-        continue;
+      while (!done) {
+        bool hadAny = false;
+        while (simulateBroadcast.pop(state))
+          hadAny = true;
 
-      // stopwatch.tic();
-
-      PacketTaker<State, Packet<PACKET_SIZE> > packetTaker(
-          state, p.header.frameNumber);
-
-      packetTaker.take(p);
-
-      while (!packetTaker.isComplete()) {
-        if (receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
-          if (!packetTaker.take(p)) {
-            // got a part from an unexpected frame before we finished this frame
-            printf("lost frame\n");
-            goto ABORT_FRAME;
-          }
-        } else {
-          usleep(1000);
+        if (hadAny) {
+          PacketMaker<State, Packet<PACKET_SIZE> > packetMaker(state, frame);
+          while (packetMaker.fill(p))
+            broadcaster.send((unsigned char*)&p);
+          frame++;
         }
+        else 
+          usleep(1000);
       }
+    });
 
-      // we're all done, try to push
-      if (!receiveRender.push(state))
-        receiveRenderWasFull++;
-    ABORT_FRAME:
-      ;
-    }
-  });
+    waitingToStart = false;
+    getchar();
+    done = true;
+    simulate.join();
+    broadcast.join();
+  }
+};
 
-  render = thread([&]() {
-    Timestamp<> t;
-    // Checksum c;
-    State state;
-    while (waitingToStart)
-      usleep(1000);
+struct Renderer {
+  void onRender(State& state) {
+    //
+    // XXX - do something interesting
+    //
+    usleep(16666);
+  }
 
-    while (!done) {
-      while (receiveRender.pop(state))
+  void run() {
+    Queue<State> receiveRender;
+    bool waitingToStart = true, done = false;
+
+    thread receive([&]() {
+      Receiver receiver;
+      receiver.init(8888);
+      Packet<PACKET_SIZE> p;
+      State state;
+      while (waitingToStart)
+        usleep(1000);
+
+      while (!done) {
+
+        if (!receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
+          usleep(1000);
+          continue;
+        }
+
+        // wait until we're at the begining of a frame
+        if (p.header.partNumber != 0)
+          continue;
+
+        PacketTaker<State, Packet<PACKET_SIZE> > packetTaker(
+            state, p.header.frameNumber);
+
+        packetTaker.take(p);
+
+        while (!packetTaker.isComplete()) {
+          if (receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
+            if (!packetTaker.take(p)) {
+              // got a part from an unexpected frame before we finished this frame
+              printf("lost frame\n");
+              goto ABORT_FRAME;
+            }
+          } else
+            usleep(1000);
+        }
+
+        // we're all done, try to push
+        receiveRender.push(state);
+      ABORT_FRAME:
         ;
-      // if (receiveRender.pop(state)) {
+      }
+    });
 
-      double delta = t.stamp() - atof(state.data);
-      printf("%s | R | %lf\n", state.data, delta);
+    thread render([&]() {
+      Timestamp<> t;
+      Checksum c;
+      State state;
+      while (waitingToStart)
+        usleep(1000);
 
-      // printf("%s | R | %lf\n", state.data, t.stamp());
+      while (!done) {
+        bool hadAny = false;
+        while (receiveRender.pop(state))
+          hadAny = true;
 
-      // c.checksum((unsigned char*)&state, sizeof(State));
-      // c.print();
-      // printf("\n");
+        if (hadAny) {
+          double delta = t.stamp() - atof(state.data);
+          printf("%s | %lf | ", state.data, delta);
+          c.checksum((unsigned char*)&state, sizeof(State));
+          c.print();
+          printf("\n");
 
-      //} else
-      //  receiveRenderWasEmpty++;
-      usleep(16665);
-    }
-  });
+          onRender(state);
+        }
+        else
+          usleep(1000);
+      }
+    });
+  
 
-  waitingToStart = false;
-  getchar();
-  done = true;
-  simulate.join();
-  broadcast.join();
-  receive.join();
-  render.join();
+    waitingToStart = false;
+    getchar();
+    done = true;
+    receive.join();
+    render.join();
+  }
+};
 
-  cout << "simulateBroadcastWasFull:" << simulateBroadcastWasFull << endl;
-  cout << "simulateBroadcastWasEmpty:" << simulateBroadcastWasEmpty << endl;
-  cout << "receiveRenderWasFull:" << receiveRenderWasFull << endl;
-  cout << "receiveRenderWasEmpty:" << receiveRenderWasEmpty << endl;
+int main(int argc, char* argv[]) {
+  HostRole hostRole;
+  hostRole.init();
+  if (hostRole.isBroadcaster) {
+    Simulator s;
+    s.run();
+  } else {
+    Renderer r;
+    r.run();
+  }
 }
