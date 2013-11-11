@@ -36,7 +36,7 @@ int main() {
          << endl;
 
   state.zero();
-  PacketTaker<State, Packet<1400>> reconstructed(state);
+  PacketTaker<State, Packet<1400>> reconstructed(state, 1);
   for (unsigned i = 0; reconstructed.take(packet[i]); ++i)
     cout << packet[i].header.partNumber << " " << packet[i].header.partSize
          << endl;

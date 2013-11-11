@@ -19,6 +19,7 @@ struct Packet {
 template <typename STATE, typename PACKET>
 struct PacketMaker {
   enum {
+    // XXX what if sizeof STATE is an integer multiple of PACKET::DATA_SIZE
     TOTAL_PART_COUNT = 1 + sizeof(STATE) / PACKET::DATA_SIZE,
     LAST_DATA_SIZE = sizeof(STATE) % PACKET::DATA_SIZE
   };
@@ -40,6 +41,7 @@ struct PacketMaker {
     else
       packet.header.partSize = PACKET::DATA_SIZE;
 
+    // what if this fails? when would it fail? how?
     memcpy(packet.byte,
            (void*)(((unsigned long)&state) + (partNumber * PACKET::DATA_SIZE)),
            packet.header.partSize);
@@ -57,23 +59,30 @@ struct PacketTaker {
   };
 
   STATE& state;
-  unsigned part[TOTAL_PART_COUNT];
+  unsigned char part[TOTAL_PART_COUNT];
+  unsigned frameNumber;
 
-  PacketTaker(STATE& state) : state(state) {
+  PacketTaker(STATE& state, unsigned frameNumber)
+      : state(state), frameNumber(frameNumber) {
     for (unsigned i = 0; i < TOTAL_PART_COUNT; ++i) part[i] = 0;
   }
 
   bool take(PACKET& packet) {
-    bool foundAll = true;
-    for (unsigned i = 0; i < TOTAL_PART_COUNT; ++i)
-      if (part[i] != 1) foundAll = false;
-    if (foundAll) return false;
+    if (packet.header.frameNumber != frameNumber) return false;
+
+    // XXX handle duplicate parts?
 
     memcpy((void*)(((unsigned long)&state) +
                    (packet.header.partNumber * PACKET::DATA_SIZE)),
            packet.byte, packet.header.partSize);
 
     part[packet.header.partNumber] = 1;
+    return true;
+  }
+
+  bool isComplete() {
+    for (unsigned i = 0; i < TOTAL_PART_COUNT; ++i)
+      if (part[i] != 1) return false;
     return true;
   }
 };
