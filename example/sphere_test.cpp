@@ -58,7 +58,7 @@ struct Simulator {
 
     thread broadcast([&]() {
       Broadcaster broadcaster;
-      broadcaster.init(PACKET_SIZE, "127.0.0.1", 8888);
+      broadcaster.init(PACKET_SIZE, "192.168.0.255", 8888);
       Packet<PACKET_SIZE> p;
       State state;
       int frame = 0;
