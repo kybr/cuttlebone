@@ -40,19 +40,22 @@ struct Simulator {
       Checksum c;
       State state;
       state.zero();
+      unsigned frame = 0;
       while (waitingToStart)
         usleep(1000);
 
       while (!done) {
         onSimulate(state);
 
-        sprintf(state.data, "%lf | %u", t.stamp(), state.n);
+        sprintf(state.data, "%lf | %u", t.stamp(), frame);
         printf("%s | ", state.data);
         c.checksum((unsigned char*)&state, sizeof(State));
         c.print();
         printf("\n");
 
         simulateBroadcast.push(state);
+
+        frame++;
       }
     });
 
