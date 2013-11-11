@@ -42,7 +42,7 @@ struct Simulator {
       state.zero();
       unsigned frame = 0;
       while (waitingToStart)
-        usleep(1000);
+        usleep(100);
 
       while (!done) {
         onSimulate(state);
@@ -66,11 +66,12 @@ struct Simulator {
       State state;
       int frame = 0;
       while (waitingToStart)
-        usleep(1000);
+        usleep(100);
 
       while (!done) {
         bool hadAny = false;
-        while (simulateBroadcast.pop(state))
+        //while (simulateBroadcast.pop(state))
+        if (simulateBroadcast.pop(state))
           hadAny = true;
 
         if (hadAny) {
@@ -79,7 +80,7 @@ struct Simulator {
             broadcaster.send((unsigned char*)&p);
           frame++;
         } else
-          usleep(1000);
+          usleep(100);
       }
     });
 
@@ -109,12 +110,12 @@ struct Renderer {
       Packet<PACKET_SIZE> p;
       State state;
       while (waitingToStart)
-        usleep(1000);
+        usleep(100);
 
       while (!done) {
 
         if (!receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
-          usleep(1000);
+          usleep(100);
           continue;
         }
 
@@ -136,7 +137,7 @@ struct Renderer {
               goto ABORT_FRAME;
             }
           } else
-            usleep(1000);
+            usleep(100);
         }
 
         // we're all done, try to push
@@ -151,11 +152,12 @@ struct Renderer {
       Checksum c;
       State state;
       while (waitingToStart)
-        usleep(1000);
+        usleep(100);
 
       while (!done) {
         bool hadAny = false;
-        while (receiveRender.pop(state))
+        //while (receiveRender.pop(state))
+        if (receiveRender.pop(state))
           hadAny = true;
 
         if (hadAny) {
@@ -167,7 +169,7 @@ struct Renderer {
 
           onRender(state);
         } else
-          usleep(1000);
+          usleep(100);
       }
     });
 
