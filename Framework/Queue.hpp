@@ -2,8 +2,8 @@
 #define __QUEUE__
 
 #include <atomic>
-#include <type_traits> // for is_pod
-#include <stdlib.h> // for size_t
+#include <type_traits>  // for is_pod
+#include <stdlib.h>     // for size_t
 
 template <typename DATA, size_t SIZE = 5>
 class Queue {

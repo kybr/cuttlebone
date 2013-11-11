@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(broadcast)
 
-set(CMAKE_CXX_FLAGS                "-Wall -std=c++11 -Wdeprecated-declarations")
+set(CMAKE_CXX_FLAGS                "-Wall -std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
 set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
@@ -60,6 +60,13 @@ target_link_libraries(timer ${CRYPTO_LIBRARIES})
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   target_link_libraries(timer -lrt)
   target_link_libraries(timer -lpthread)
+endif()
+
+add_executable(time test/time.cpp)
+target_link_libraries(time ${CRYPTO_LIBRARIES})
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  target_link_libraries(time -lrt)
+  target_link_libraries(time -lpthread)
 endif()
 
 add_executable(state_distribution example/state_distribution.cpp)
