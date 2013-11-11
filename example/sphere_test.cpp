@@ -18,7 +18,7 @@ using namespace std;
 //
 struct State {
   unsigned n;
-  char data[190000];
+  char data[1000000];
   void zero() { memset(this, 0, sizeof(State)); }
 };
 
@@ -37,7 +37,7 @@ struct Simulator {
 
     thread simulate([&]() {
       Timestamp<> t;
-      Checksum c;
+      //Checksum c;
       State state;
       state.zero();
       unsigned frame = 0;
@@ -49,8 +49,8 @@ struct Simulator {
 
         sprintf(state.data, "%lf | %u", t.stamp(), frame);
         printf("%s | ", state.data);
-        c.checksum((unsigned char*)&state, sizeof(State));
-        c.print();
+        //c.checksum((unsigned char*)&state, sizeof(State));
+        //c.print();
         printf("\n");
 
         simulateBroadcast.push(state);
@@ -161,8 +161,8 @@ struct Renderer {
         if (hadAny) {
           double delta = t.stamp() - atof(state.data);
           printf("%s | %lf | ", state.data, delta);
-          c.checksum((unsigned char*)&state, sizeof(State));
-          c.print();
+          //c.checksum((unsigned char*)&state, sizeof(State));
+          //c.print();
           printf("\n");
 
           onRender(state);
