@@ -5,21 +5,23 @@
 using namespace std;
 using namespace std::chrono;
 
-template <typename clock = high_resolution_clock>
+template <typename CLOCK = high_resolution_clock>
 struct Timestamp {
-  time_point<clock> born;
-  Timestamp() { born = clock::now(); }
+  static time_point<CLOCK>& born() {
+    static time_point<CLOCK> born = CLOCK::now();
+    return born;
+  }
   inline double stamp() {
-    return (duration_cast<duration<double>>(clock::now() - born)).count();
+    return (duration_cast<duration<double>>(CLOCK::now() - born())).count();
   }
 };
 
-template <typename clock = high_resolution_clock>
+template <typename CLOCK = high_resolution_clock>
 struct Stopwatch {
-  time_point<clock> start, end;
-  void tic() { start = clock::now(); }
+  time_point<CLOCK> start, end;
+  void tic() { start = CLOCK::now(); }
   inline double toc() {
-    end = clock::now();
+    end = CLOCK::now();
     duration<double> elapsed_seconds = end - start;
     return elapsed_seconds.count();
   }

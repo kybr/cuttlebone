@@ -18,7 +18,7 @@ using namespace std;
 //
 struct State {
   unsigned n;
-  char data[1000000];
+  char data[100000];
   void zero() { memset(this, 0, sizeof(State)); }
 };
 

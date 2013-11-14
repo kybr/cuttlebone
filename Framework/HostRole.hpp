@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char* data[] = {"gr11",  // this first element is the broadcaster hostname
-                      "gr09", "gr10", "gr14", "gr12", "gr13", "gr07",
-                      "gr01", "gr04", "gr05", "gr06", "gr08", "photon", };
+const char* data[] = {"gr11", "gr01", "gr03", "gr04", "gr05", "gr06", "gr07",
+                      "gr08", "gr09", "gr10", "gr12", "gr13", "gr14", };
+
 struct HostRole {
   bool isBroadcaster;
   bool isSelector;
