@@ -4,6 +4,8 @@
 #include "Framework/Timer.hpp"
 #include "Framework/Checksum.hpp"
 
+const char* hostRole[] = {"nonce", "gr01", "gr02", "gr03", "gr04", "gr05", "gr06", "gr07", "gr08", "gr09", "gr10", "gr12", "gr13", "gr14", };
+
 struct App : HostRole, Selector<App>, Broadcaster, Timer, Checksum {
   unsigned char* buffer;
   unsigned char* b;
@@ -11,7 +13,8 @@ struct App : HostRole, Selector<App>, Broadcaster, Timer, Checksum {
 
   void init(unsigned packetSize, unsigned timerPeriod, unsigned selectTimeout,
             const char* ip, unsigned port) {
-    HostRole::init();
+
+    HostRole::init(hostRole);
 
     this->packetSize = packetSize;
     buffer = new unsigned char[packetSize];

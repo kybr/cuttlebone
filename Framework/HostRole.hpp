@@ -6,15 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char* data[] = {"gr11", "gr01", "gr03", "gr04", "gr05", "gr06", "gr07",
-                      "gr08", "gr09", "gr10", "gr12", "gr13", "gr14", };
-
 struct HostRole {
   bool isBroadcaster;
   bool isSelector;
   char hostname[256];
 
-  void init() {
+  void init(const char** hostRole) {
     if (gethostname(hostname, 256) == -1) {
       perror("gethostname");
       exit(-1);
@@ -22,13 +19,13 @@ struct HostRole {
 
     printf("i am %s\n", hostname);
 
-    if (strncmp(data[0], hostname, 256) == 0) {
+    if (strncmp(hostRole[0], hostname, 256) == 0) {
       isBroadcaster = true;
       isSelector = false;
     } else {
       bool foundHostname = false;
-      for (unsigned i = 1; i < (sizeof(data) / sizeof(data[0])); i++)
-        if (strncmp(data[i], hostname, 256) == 0) foundHostname = true;
+      for (unsigned i = 1; i < (sizeof(hostRole) / sizeof(hostRole[0])); i++)
+        if (strncmp(hostRole[i], hostname, 256) == 0) foundHostname = true;
       if (foundHostname) {
         isBroadcaster = false;
         isSelector = true;

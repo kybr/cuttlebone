@@ -149,7 +149,7 @@ struct Renderer {
 
     thread render([&]() {
       Timestamp<> t;
-      Checksum c;
+      //Checksum c;
       State state;
       while (waitingToStart)
         usleep(100);
@@ -181,9 +181,11 @@ struct Renderer {
   }
 };
 
+const char* configuration[] = {"nonce", "gr01", "gr02", "gr03", "gr04", "gr05", "gr06", "gr07", "gr08", "gr09", "gr10", "gr12", "gr13", "gr14", };
+
 int main(int argc, char* argv[]) {
   HostRole hostRole;
-  hostRole.init();
+  hostRole.init(configuration);
   if (hostRole.isBroadcaster) {
     Simulator s;
     s.run();
