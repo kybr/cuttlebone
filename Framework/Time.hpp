@@ -14,6 +14,9 @@ struct Timestamp {
   inline double stamp() {
     return (duration_cast<duration<double>>(CLOCK::now() - born())).count();
   }
+  inline double operator()() {
+    return stamp();
+  }
 };
 
 template <typename CLOCK = high_resolution_clock>
