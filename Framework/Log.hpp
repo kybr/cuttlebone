@@ -4,6 +4,7 @@
 #include <thread>
 #include <iostream>
 #include <cstdio>
+#include <cstdarg>
 #include <chrono>
 #include <vector>
 #include <queue>
