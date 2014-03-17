@@ -14,12 +14,12 @@ using namespace std;
 
 #include "Framework/Queue.hpp"
 
-template <int N = 3, int Q = 20, int R = 256>
+template <int NUMBER_OF_QUEUES = 3, int QUEUE_SIZE = 100, int REPORT_LENGTH = 256, int WAIT_MICROSECONDS = 1000>
 struct Log {
 
   struct Report {
     double time;
-    char text[R];
+    char text[REPORT_LENGTH];
   };
 
   struct CompareTime {
@@ -28,7 +28,7 @@ struct Log {
     }
   };
 
-  Queue<Report, Q> queue[N];
+  Queue<Report, QUEUE_SIZE> queue[NUMBER_OF_QUEUES];
   bool done;
   thread t;
   ofstream output;
@@ -50,16 +50,26 @@ struct Log {
 
       Report report;
       while (!done) {
-        for (int i = 0; i < N; ++i)
-          while (queue[i].pop(report))
+        for (int i = 0; i < NUMBER_OF_QUEUES; ++i)
+          while (queue[i].pop(report)) // XXX change to if to avoid starvation?
             priority.push(report);
 
-        while (!priority.empty()) {
+        double now = chrono::duration_cast<chrono::duration<double>>(chrono::high_resolution_clock::now() - logStartTime).count();
+        while ( (!priority.empty()) && ((now - priority.top().time) > 0.5)) {
           output << priority.top().text << endl;
           priority.pop();
         }
 
-        usleep(1000);
+        usleep(WAIT_MICROSECONDS);
+      }
+
+      for (int i = 0; i < NUMBER_OF_QUEUES; ++i)
+        while (queue[i].pop(report))
+          priority.push(report);
+
+      while (!priority.empty()) {
+        output << priority.top().text << endl;
+        priority.pop();
       }
     });
   }
@@ -82,6 +92,7 @@ struct Log {
     report.time = chrono::duration_cast<chrono::duration<double>>(
         chrono::high_resolution_clock::now() - logStartTime).count();
     sprintf(report.text, "%.8lf|%s", report.time, buffer);
+
     queue[i].push(report);
   }
 };

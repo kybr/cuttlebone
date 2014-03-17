@@ -4,8 +4,12 @@
 #include "Framework/Timer.hpp"
 #include "Framework/Checksum.hpp"
 
-const char* hostRole[] = {"nonce", "gr01", "gr02", "gr03", "gr04", "gr05", "gr06", "gr07", "gr08", "gr09", "gr10", "gr12", "gr13", "gr14", };
+/*
+const char* config[] = {"192.168.10.255", "gr01", "audio", "gr02", "gr03", "gr04",
+                      "gr05", "gr06",  "gr07", "gr08", "gr09",
+                      "gr10", "gr11",  "gr12", "gr13", "gr14", };
 
+BROKEN
 struct App : HostRole, Selector<App>, Broadcaster, Timer, Checksum {
   unsigned char* buffer;
   unsigned char* b;
@@ -59,3 +63,6 @@ int main(int argc, char* argv[]) {
   app.init(packetSize, timerPeriod, selectTimeout, ip, port);
   getchar();
 }
+*/
+
+int main(){}

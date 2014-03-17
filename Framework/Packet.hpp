@@ -2,6 +2,7 @@
 #define __PACKET__
 
 #include <string.h>  // for memcpy
+#include <iostream>
 
 template <unsigned SIZE>
 struct Packet {
@@ -61,6 +62,21 @@ struct PacketTaker {
   STATE& state;
   unsigned char part[TOTAL_PART_COUNT];
   unsigned frameNumber;
+
+  void summary() {
+    int sum = 0;
+    printf("%d>", frameNumber);
+    for (unsigned i = 0; i < TOTAL_PART_COUNT; ++i) {
+      if (part[i] == 1)
+        printf("o");
+      else if (part[i] == 0)
+        printf("_");
+      else
+        printf("!");
+      sum += part[i];
+    }
+    printf(" %d of %d received\n", sum, TOTAL_PART_COUNT);
+  }
 
   PacketTaker(STATE& state, unsigned frameNumber)
       : state(state), frameNumber(frameNumber) {

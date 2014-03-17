@@ -11,7 +11,9 @@
 #include <thread>
 #include <string.h>
 using namespace std;
+/*
 
+BROKEN
 #define PACKET_SIZE (1400)
 
 // must be a POD type
@@ -194,3 +196,5 @@ int main(int argc, char* argv[]) {
     r.run();
   }
 }
+*/
+int main() {}
