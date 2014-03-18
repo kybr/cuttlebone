@@ -1,15 +1,13 @@
 #ifndef INCLUDE_AL_BROADCAST_APP_HPP
 #define INCLUDE_AL_BROADCAST_APP_HPP
 
-#include "alloutil/Broadcaster.hpp"
-#include "alloutil/Checksum.hpp"
+//#define LOG_FILE ("/tmp/file.txt") // log to a file instead of standard out
+//#define DONT_COMPILE_LOG // like log never existed
+#include "alloutil/Log.hpp"
 #include "alloutil/HostRole.hpp"
 #include "alloutil/Packet.hpp"
 #include "alloutil/Queue.hpp"
-#include "alloutil/Receiver.hpp"
-#include "alloutil/Selector.hpp"
-#include "alloutil/Time.hpp"
-#include "alloutil/Log.hpp"
+
 #include "alloutil/al_OmniApp.hpp"
 #include "allocore/sound/al_Ambisonics.hpp"
 #include "allocore/sound/al_AudioScene.hpp"
@@ -80,7 +78,6 @@ Speaker localSpeaker[] = {Speaker(0, 45, 0), Speaker(1, -45, 0), };
 
 template <typename STATE, unsigned PACKET_SIZE = 1400>
 struct BroadcastApp : OmniApp {
-  Log<> log;
   STATE simulationState, graphicsRenderState, audioRenderState;
   thread broadcast, receive;
   Queue<STATE> simulateBroadcast, receiveGraphicsRender, receiveAudioRender;
@@ -100,7 +97,7 @@ struct BroadcastApp : OmniApp {
   }
 
   BroadcastApp(unsigned port = 8888, bool greedy = true) : greedy(greedy) {
-    log(0, "BroadcastApp()");
+    log("BroadcastApp()");
 
     done = false;
     waitingToStart = true;
@@ -112,7 +109,7 @@ struct BroadcastApp : OmniApp {
     memset(&audioRenderState, 0, sizeof(STATE));
 
     if (hostRole.isSimulator) {
-      log(0, "creating broadcast thread");
+      log("creating broadcast thread");
       broadcast = thread([&]() {
         Broadcaster broadcaster;
         broadcaster.init(PACKET_SIZE, hostRole.broadcastIpAddress(), port);
@@ -144,7 +141,7 @@ struct BroadcastApp : OmniApp {
     }
 
     if (hostRole.isGraphicsRenderer || hostRole.isAudioRenderer) {
-      log(0, "creating receive thread");
+      log("creating receive thread");
       receive = thread([&]() {
         Receiver receiver;
         receiver.init(port);
@@ -176,7 +173,7 @@ struct BroadcastApp : OmniApp {
           while (!packetTaker.isComplete()) {
             if (receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
               if (!packetTaker.take(p)) {
-                log(1, "ABORT FRAME. got a part from an unexpected frame before we finished this frame");
+                log("ABORT FRAME. got a part from an unexpected frame before we finished this frame");
                 packetTaker.summary();
                 goto ABORT_FRAME;
               }
@@ -231,7 +228,7 @@ struct BroadcastApp : OmniApp {
     //
     usleep(100000);
     waitingToStart = false;
-    log(0, "end of BroadcastApp constructor...");
+    log("end of BroadcastApp constructor...");
   }
 
   virtual void onSimulatorInit(STATE& state) = 0;
@@ -264,7 +261,7 @@ struct BroadcastApp : OmniApp {
       }
 
       if (!hadAny) {
-        log(2, "RENDER QUEUE EMPTY.. using old frame ");
+        log("RENDER QUEUE EMPTY.. using old frame ");
       }
 
       onRendererLocal(dt, graphicsRenderState, hadAny);

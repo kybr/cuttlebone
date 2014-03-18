@@ -3,46 +3,44 @@
 
 using namespace std;
 
-// to nullify the log...
-//#define log(...) do{}while(0)
-// to log to a file instead of standard out
-//#define LOG_FILE_PATH ("/tmp/file.txt")
+//#define LOG_FILE ("/tmp/file.txt") // LOG to a file instead of standard out
+//#define DONT_COMPILE_LOG // like LOG never existed
 #include "Framework/Log.hpp"
 
 int main(int argc, char* argv[]) {
-  log("main|started");
+  LOG("main|started");
 
   thread audio([&]() {
-    log("audio|started");
+    LOG("audio|started");
     for (int i = 0; i < 345; i++) {
       usleep(2902);
-      log("audio|%d", i);
+      LOG("audio|%d", i);
     }
-    log("audio|ended");
+    LOG("audio|ended");
   });
 
   thread graphics([&]() {
-    log("graphics|started");
+    LOG("graphics|started");
     for (int i = 0; i < 60; i++) {
       usleep(16667);
-      log("graphics|%d", i);
+      LOG("graphics|%d", i);
     }
-    log("graphics|ended");
+    LOG("graphics|ended");
   });
 
   thread network([&]() {
-    log("network|started");
+    LOG("network|started");
     for (int i = 0; i < 10; i++) {
       usleep(100000);
-      log("network|%d", i);
+      LOG("network|%d", i);
     }
-    log("network|ended");
+    LOG("network|ended");
   });
 
-  log("main|waiting for <enter>...");
+  LOG("main|waiting for <enter>...");
   getchar();
   audio.join();
   graphics.join();
   network.join();
-  log("main|ended");
+  LOG("main|ended");
 }

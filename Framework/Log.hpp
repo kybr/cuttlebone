@@ -1,12 +1,30 @@
+/**
+
+Log.hpp - a logging system..
+
+the goal of this system is to enable the user to...
+ - call LOG(...) from any thread and in any scope
+ - get accurately timestamped reports logged to a file or the standard output
+
+some sacrifices made include...
+ - LOG(...) does a singleton lookup
+ - LOG(...) does a thread::id lookup in an unordered_map
+ - we could use local proxy objects to make the above "per thread" instead
+ - (from Andres) calls to now() block, so this logger is not "wait free"
+
+*/
+
 #ifndef __LOG__
 #define __LOG__
 
 // c++
 #include <chrono>
+#include <atomic>
 #include <fstream>
 #include <iostream>
 #include <queue>
 #include <thread>
+#include <mutex>
 #include <unordered_map>
 #include <vector>
 // c
@@ -19,14 +37,20 @@ using namespace std;
 
 #include "Framework/Queue.hpp"
 
-#ifndef LOG_FILE_PATH
-#define LOG_FILE_PATH ("")
+#ifndef LOG_FILE
+#define LOG_FILE ("")
 #endif
 
-#define log(...)                                                       \
+#ifdef DONT_COMPILE_LOG
+#define LOG(...) \
+  do {           \
+  } while (0)
+#else
+#define LOG(...)                                                       \
   do {                                                                 \
     Log<>::instance().report(std::this_thread::get_id(), __VA_ARGS__); \
   } while (0)
+#endif
 
 template <int NUMBER_OF_QUEUES = 7, int QUEUE_SIZE = 100,
           int REPORT_LENGTH = 256, int WAIT_MICROSECONDS = 1000>
@@ -50,7 +74,8 @@ struct Log {
   priority_queue<Report, vector<Report>, CompareTime> priority;
   chrono::high_resolution_clock::time_point logStartTime;
   std::unordered_map<std::thread::id, int> queueThreadMap;
-  int n;
+  atomic<int> n;
+  mutex queueThreadMapMutex;
 
   static Log& instance() {
     static Log instance;
@@ -61,7 +86,7 @@ struct Log {
     n = 0;
     done = false;
 
-    output.open(LOG_FILE_PATH);
+    output.open(LOG_FILE);
     if (!output.is_open()) {
       output.copyfmt(cout);
       output.clear(cout.rdstate());
@@ -110,9 +135,13 @@ struct Log {
         chrono::high_resolution_clock::now() - logStartTime).count();
 
     if (queueThreadMap.find(tid) == queueThreadMap.end()) {
-      // XXX this is not thread-safe, IMHO.
-      queueThreadMap[tid] = n;
-      n++;
+
+      // this makes n and queueThreadMap thread-safe
+      //
+      queueThreadMapMutex.lock();
+      queueThreadMap[tid] = atomic_fetch_add(&n, 1);
+      queueThreadMapMutex.unlock();
+
       assert(n < NUMBER_OF_QUEUES);
     }
 

@@ -23,7 +23,7 @@ struct HostRole {
     }
 
     //printf("i am %s\n", hostname);
-    log("i am %s", hostname);
+    LOG("i am %s", hostname);
 
     if (strncmp(config[1], hostname, 256) == 0) {
       isSimulator = true;
@@ -50,9 +50,9 @@ struct HostRole {
       }
     }
 
-    if (isSimulator) log("i am the simulator");
-    if (isGraphicsRenderer) log("i am a graphics renderer");
-    if (isAudioRenderer) log("i am an audio renderer");
+    if (isSimulator) LOG("i am the simulator");
+    if (isGraphicsRenderer) LOG("i am a graphics renderer");
+    if (isAudioRenderer) LOG("i am an audio renderer");
   }
 
   const char* broadcastIpAddress() {
