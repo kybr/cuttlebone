@@ -1,10 +1,11 @@
 #ifndef __HOSTROLE__
 #define __HOSTROLE__
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+//#include <unistd.h>
+//#include <stdio.h>
+#include <stdlib.h> // perror
+#include <string.h> // strncmp
+#include "Framework/Log.hpp"
 
 const char* config[] = {
   "192.168.10.255", "gr01", "audio", "gr02", "gr03", "gr04", "gr05", "gr06",
@@ -21,7 +22,8 @@ struct HostRole {
       exit(-1);
     }
 
-    printf("i am %s\n", hostname);
+    //printf("i am %s\n", hostname);
+    log("i am %s", hostname);
 
     if (strncmp(config[1], hostname, 256) == 0) {
       isSimulator = true;
@@ -48,15 +50,14 @@ struct HostRole {
       }
     }
 
-    if (isSimulator) printf("i am the simulator\n");
-    if (isGraphicsRenderer) printf("i am a graphics renderer\n");
-    if (isAudioRenderer) printf("i am an audio renderer\n");
+    if (isSimulator) log("i am the simulator");
+    if (isGraphicsRenderer) log("i am a graphics renderer");
+    if (isAudioRenderer) log("i am an audio renderer");
   }
 
   const char* broadcastIpAddress() {
     if (isSimulator && isGraphicsRenderer && isAudioRenderer)
-      // we're running on a laptop. use the "home" ip address
-      return "127.0.0.1";
+      return "127.0.0.1"; // we're running on a laptop. use the "home" ip address
     else
       return config[0];
   }

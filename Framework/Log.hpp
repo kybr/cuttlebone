@@ -19,8 +19,8 @@ using namespace std;
 
 #include "Framework/Queue.hpp"
 
-#ifndef LOG_FILE
-#define LOG_FILE ("")
+#ifndef LOG_FILE_PATH
+#define LOG_FILE_PATH ("")
 #endif
 
 #define log(...)                                                       \

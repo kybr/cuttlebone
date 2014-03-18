@@ -19,9 +19,9 @@ struct Timer;
 Timer* that;
 #ifdef _WIN32
 #elif __linux__
-void function(int);
+void func(int);
 #elif __APPLE__
-void function(void*);
+void func(void*);
 #endif
 
 struct Timer {
@@ -40,7 +40,7 @@ struct Timer {
     sevp.sigev_signo = SIGUSR1;
     sevp.sigev_value.sival_ptr = (void*)this;
     sevp.sigev_notify_attributes = 0;  // important
-    signal(SIGUSR1, function);
+    signal(SIGUSR1, func);
     assert(timer_create(CLOCK_REALTIME, &sevp, &timerid) == 0);
 
     int seconds = (int)period;
@@ -76,7 +76,7 @@ struct Timer {
                                    DISPATCH_TIMER_STRICT, queue);
     if (!timer) exit(-1);
     dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, interval, leyway);
-    dispatch_source_set_event_handler_f(timer, function);
+    dispatch_source_set_event_handler_f(timer, func);
     dispatch_resume(timer);
   }
 
@@ -87,8 +87,8 @@ struct Timer {
 
 #ifdef _WIN32
 #elif __linux__
-void function(int) { that->onTimer(); }
+void func(int) { that->onTimer(); }
 #elif __APPLE__
-void function(void*) { that->onTimer(); }
+void func(void*) { that->onTimer(); }
 #endif
 #endif  // __TIMER__

@@ -3,9 +3,11 @@
 
 using namespace std;
 
-#define LOG_FILE_PATH ("")
-#include "Framework/Log.hpp"
+// to nullify the log...
 //#define log(...) do{}while(0)
+// to log to a file instead of standard out
+//#define LOG_FILE_PATH ("/tmp/file.txt")
+#include "Framework/Log.hpp"
 
 int main(int argc, char* argv[]) {
   log("main|started");
@@ -37,6 +39,7 @@ int main(int argc, char* argv[]) {
     log("network|ended");
   });
 
+  log("main|waiting for <enter>...");
   getchar();
   audio.join();
   graphics.join();
