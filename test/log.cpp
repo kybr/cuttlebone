@@ -3,43 +3,43 @@
 
 using namespace std;
 
+#define LOG_FILE_PATH ("")
 #include "Framework/Log.hpp"
+//#define log(...) do{}while(0)
 
 int main(int argc, char* argv[]) {
-  srand(0);
-
-  Log<> log((argc == 2) ? argv[1] : "");
+  log("main|started");
 
   thread audio([&]() {
-    log(0, "audio|started");
-    for (int i = 0; i < 1000; i++) {
+    log("audio|started");
+    for (int i = 0; i < 345; i++) {
       usleep(2902);
-      log(0, "audio|%d", i);
+      log("audio|%d", i);
     }
-    log(0, "audio|ended");
+    log("audio|ended");
   });
 
   thread graphics([&]() {
-    log(1, "graphics|started");
-    for (int i = 0; i < 100; i++) {
+    log("graphics|started");
+    for (int i = 0; i < 60; i++) {
       usleep(16667);
-      log(1, "graphics|%d", i);
+      log("graphics|%d", i);
     }
-    log(1, "graphics|ended");
+    log("graphics|ended");
   });
 
   thread network([&]() {
-    log(2, "network|started");
-    for (int i = 0; i < 100; i++) {
-      usleep(rand() / float(RAND_MAX) * 10000);
-      log(2, "network|%d", i);
+    log("network|started");
+    for (int i = 0; i < 10; i++) {
+      usleep(100000);
+      log("network|%d", i);
     }
-    log(2, "network|ended");
+    log("network|ended");
   });
 
   getchar();
-
   audio.join();
   graphics.join();
   network.join();
+  log("main|ended");
 }

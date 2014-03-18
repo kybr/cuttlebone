@@ -25,7 +25,9 @@ struct Receiver {
     address.sin_port = htons(port);
     address.sin_addr.s_addr = INADDR_ANY;
 
-    if (bind(fileDescriptor, (sockaddr*)&address, sizeof(sockaddr)) == -1) {
+    // we need the :: to disambiguate between std::bind (c++11) linux bind
+    //
+    if (::bind(fileDescriptor, (sockaddr*)&address, sizeof(sockaddr)) == -1) {
       perror("bind");
       exit(-1);
     }
