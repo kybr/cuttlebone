@@ -25,7 +25,7 @@ struct Receiver {
     address.sin_port = htons(port);
     address.sin_addr.s_addr = INADDR_ANY;
 
-    // we need the :: to disambiguate between std::bind (c++11) linux bind
+    // we need the :: to disambiguate between std::bind (c++11) socket.h bind
     //
     if (::bind(fileDescriptor, (sockaddr*)&address, sizeof(sockaddr)) == -1) {
       perror("bind");
