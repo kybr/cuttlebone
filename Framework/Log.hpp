@@ -12,6 +12,9 @@ some sacrifices made include...
  - we could use local proxy objects to make the above "per thread" instead
  - (from Andres) calls to now() block, so this logger is not "wait free"
 
+testing TBD...
+ - measure how long now() blocks using a tight loop
+
 */
 
 #ifndef __LOG__
