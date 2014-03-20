@@ -18,21 +18,21 @@ struct ConfigurationData {
 };
 
 ConfigurationData defaultConfigurationData[] = {
-    {"gr01", .simulation = true, .broadcast = "192.168.10.255"},
-    {"audio", .audio = true},
-    {"gr02", .visual = true},
-    {"gr03", .visual = true},
-    {"gr04", .visual = true},
-    {"gr05", .visual = true},
-    {"gr06", .visual = true},
-    {"gr07", .visual = true},
-    {"gr08", .visual = true},
-    {"gr09", .visual = true},
-    {"gr10", .visual = true},
-    {"gr11", .visual = true},
-    {"gr12", .visual = true},
-    {"gr13", .visual = true},
-    {"gr14", .visual = true}, };
+    {"gr01", "192.168.10.255", true, false, false, false} ,
+    {"audio","", false, true, false, false },
+    {"gr02", "", false, false, true, false},
+    {"gr03", "", false, false, true, false},
+    {"gr04", "", false, false, true, false},
+    {"gr05", "", false, false, true, false},
+    {"gr06", "", false, false, true, false},
+    {"gr07", "", false, false, true, false},
+    {"gr08", "", false, false, true, false},
+    {"gr09", "", false, false, true, false},
+    {"gr10", "", false, false, true, false},
+    {"gr11", "", false, false, true, false},
+    {"gr12", "", false, false, true, false},
+    {"gr13", "", false, false, true, false},
+    {"gr14", "", false, false, true, false}, };
 
 struct Configuration : ConfigurationData {
 
@@ -40,7 +40,7 @@ struct Configuration : ConfigurationData {
     LOG("using default configuration");
   }
 
-  template <size_t N>
+  template <unsigned N>
   Configuration(ConfigurationData (&configurationCandidate)[N]) {
 
     char hostname[256];
@@ -49,9 +49,9 @@ struct Configuration : ConfigurationData {
       exit(-1);
     }
 
-    int self = -1;
+    unsigned self = 0;
     bool foundSelf = false;
-    for (int i = 0; i < N; ++i)
+    for (unsigned i = 0; i < N; ++i)
       if (strncmp(configurationCandidate[i].name, hostname, 256) == 0) {
         foundSelf = true;
         self = i;
