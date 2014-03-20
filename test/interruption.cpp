@@ -16,12 +16,14 @@ using namespace std;
 //#define DONT_COMPILE_LOG // like LOG never existed
 #include "Framework/Log.hpp"
 
+#define MAXIMUM (20)
+
 int main(int argc, char* argv[]) {
   using namespace std::chrono;
 
   int N = std::thread::hardware_concurrency();
-  double result[N];
-  thread t[N];
+  double result[MAXIMUM];
+  thread t[MAXIMUM];
   bool done = false;
   bool wait = true;
 

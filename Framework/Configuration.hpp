@@ -36,7 +36,9 @@ ConfigurationData defaultConfigurationData[] = {
 
 struct Configuration : ConfigurationData {
 
-  Configuration() : Configuration(defaultConfigurationData) {}
+  Configuration() : Configuration(defaultConfigurationData) {
+    LOG("using default configuration");
+  }
 
   template <size_t N>
   Configuration(ConfigurationData (&configurationCandidate)[N]) {
@@ -52,6 +54,7 @@ struct Configuration : ConfigurationData {
     for (int i = 0; i < N; ++i)
       if (strncmp(configurationCandidate[i].name, hostname, 256) == 0) {
         foundSelf = true;
+        self = i;
         break;
       }
 
@@ -61,6 +64,8 @@ struct Configuration : ConfigurationData {
       audio = configurationCandidate[self].audio;
       visual = configurationCandidate[self].visual;
       device = configurationCandidate[self].device;
+      broadcast = configurationCandidate[self].broadcast;
+
       LOG("i am %s; i do%s%s%s%s.", hostname, simulation ? " simulation" : "",
           audio ? " audio" : "", visual ? " visual" : "",
           device ? " device" : "");
