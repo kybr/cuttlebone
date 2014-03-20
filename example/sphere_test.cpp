@@ -1,4 +1,4 @@
-#include "Framework/HostRole.hpp"
+#include "Framework/Configuration.hpp"
 #include "Framework/Packet.hpp"
 #include "Framework/Checksum.hpp"
 #include "Framework/Time.hpp"

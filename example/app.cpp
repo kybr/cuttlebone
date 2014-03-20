@@ -1,4 +1,4 @@
-#include "Framework/HostRole.hpp"
+#include "Framework/Configuration.hpp"
 #include "Framework/Selector.hpp"
 #include "Framework/Broadcaster.hpp"
 #include "Framework/Timer.hpp"
