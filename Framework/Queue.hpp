@@ -7,7 +7,7 @@
 
 template <typename DATA, size_t SIZE = 5>
 class Queue {
-//  static_assert(std::is_pod<DATA>::value, "DATA must be a POD type.");
+  //  static_assert(std::is_pod<DATA>::value, "DATA must be a POD type.");
 
   enum {
     CAPACITY = SIZE + 1

@@ -51,6 +51,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < N; i++) t[i].join();
 
   double max = 0.0;
-  for (int i = 0; i < N; i++) if (result[i] > max) max = result[i];
+  for (int i = 0; i < N; i++)
+    if (result[i] > max) max = result[i];
   cout << max << endl;
 }

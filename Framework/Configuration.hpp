@@ -18,8 +18,8 @@ struct ConfigurationData {
 };
 
 ConfigurationData defaultConfigurationData[] = {
-    {"gr01", "192.168.10.255", true, false, false, false} ,
-    {"audio","", false, true, false, false },
+    {"gr01", "192.168.10.255", true, false, false, false},
+    {"audio", "", false, true, false, false},
     {"gr02", "", false, false, true, false},
     {"gr03", "", false, false, true, false},
     {"gr04", "", false, false, true, false},
