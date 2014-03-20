@@ -55,7 +55,7 @@ using namespace std;
   } while (0)
 #endif
 
-template <int NUMBER_OF_QUEUES = 7, int QUEUE_SIZE = 100,
+template <int NUMBER_OF_QUEUES = 17, int QUEUE_SIZE = 100,
           int REPORT_LENGTH = 256, int WAIT_MICROSECONDS = 1000>
 struct Log {
 

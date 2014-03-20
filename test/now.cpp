@@ -16,10 +16,10 @@ using namespace std;
 //#define DONT_COMPILE_LOG // like LOG never existed
 #include "Framework/Log.hpp"
 
-#define N (3)
-
 int main(int argc, char* argv[]) {
   using namespace std::chrono;
+
+  int N = std::thread::hardware_concurrency();
   double result[N];
   thread t[N];
   bool done = false;
@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
       double delta = duration_cast<duration<double> >(now - then).count();
       if (delta > max) {
         max = delta;
-        LOG("thread %d :: %lf", max);
+        LOG("%lf", max);
       }
     }
     result[i] = max;
@@ -47,5 +47,8 @@ int main(int argc, char* argv[]) {
   getchar();
   done = true;
   for (int i = 0; i < N; i++) t[i].join();
-  for (int i = 0; i < N; i++) cout << result[i] << endl;
+
+  double max = 0.0;
+  for (int i = 0; i < N; i++) if (result[i] > max) max = result[i];
+  cout << max << endl;
 }
