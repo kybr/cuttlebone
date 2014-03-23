@@ -25,6 +25,13 @@ struct Broadcaster {
     setsockopt(fileDescriptor, SOL_SOCKET, SO_BROADCAST, &broadcast,
                sizeof(broadcast));
 
+    int window = 16777216;
+    if (setsockopt(fileDescriptor, SOL_SOCKET, SO_SNDBUF, &window, sizeof(int)) == -1) {
+    fprintf(stderr, "Error setting socket opts: %s\n", strerror(errno));
+    }
+    printf("%d byte send buffer (aka \"window\")\n", window);
+
+
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
