@@ -27,7 +27,8 @@ class Queue {
     const auto current_tail = _tail.load(std::memory_order_relaxed);
     const auto next_tail = increment(current_tail);
     if (next_tail != _head.load(std::memory_order_acquire)) {
-      _array[current_tail] = item;
+      // slow! _array[current_tail] = item;
+      memcpy(&_array[current_tail], &item, sizeof(DATA));
       _tail.store(next_tail, std::memory_order_release);
       return true;
     }
@@ -40,7 +41,8 @@ class Queue {
     const auto current_head = _head.load(std::memory_order_relaxed);
     if (current_head == _tail.load(std::memory_order_acquire))
       return false;  // empty queue
-    item = _array[current_head];
+    // slow! item = _array[current_head];
+    memcpy(&item, &_array[current_head], sizeof(DATA));
     _head.store(increment(current_head), std::memory_order_release);
     return true;
   }

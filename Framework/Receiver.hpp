@@ -8,9 +8,11 @@
 #include <cstdio>        // linux
 #include <string>
 #include <cassert>
+#include "alloutil/Log.hpp"
 
 struct Receiver {
   int fileDescriptor;
+  float waitingTime;
 
   void init(unsigned port) {
 
@@ -18,6 +20,16 @@ struct Receiver {
       perror("socket");
       exit(-1);
     }
+
+    waitingTime = 0;
+
+    // magic
+    //
+    int window = 16777216;
+    if (setsockopt(fileDescriptor, SOL_SOCKET, SO_RCVBUF, &window, sizeof(int)) == -1) {
+      fprintf(stderr, "Error setting socket opts: %s\n", strerror(errno));
+    }
+    printf("%d byte receive buffer (aka \"window\")\n", window);
 
     struct sockaddr_in address;
     memset(&address, 0, sizeof(address));
@@ -31,6 +43,8 @@ struct Receiver {
       perror("bind");
       exit(-1);
     }
+
+    LOG("Receiver listening on port %d", port);
   }
 
   bool receive(void* buffer, unsigned packetSize, float timeOut) {
@@ -42,23 +56,25 @@ struct Receiver {
     int microseconds = (timeOut - (int)timeOut) * 1000000;
     if (microseconds > 999999) microseconds = 999999;
 
-    struct timeval tv;  // = {0, timeOut};  // sec, usec
+    struct timeval tv;
     tv.tv_sec = seconds;
     tv.tv_usec = microseconds;
 
-    // printf("BEFORE: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
     int rv = select(fileDescriptor + 1, &fileDescriptorSet, 0, 0, &tv);
-    // printf("AFTER: %ld, %ld\n", tv.tv_sec, tv.tv_usec);
 
     // XXX so is tv now the actual time that select waited?
+    //
+    float waited = tv.tv_sec + tv.tv_usec / 1000000.0f;
 
     if (rv == -1) {
-      perror("select");
+      LOG("select error %d", errno);
       return false;
     } else if (rv == 0) {
-      printf("Timeout! Who cares?\n");
+      waitingTime += timeOut;
       return false;
     } else {
+      //LOG("waited for %fs for packet", waited + waitingTime);
+      waitingTime = 0;
       int bytesReceived = recvfrom(fileDescriptor, buffer, packetSize, 0, 0, 0);
       if (bytesReceived == -1) {
         perror("recvfrom");

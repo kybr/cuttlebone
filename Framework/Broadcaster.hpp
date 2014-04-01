@@ -9,6 +9,7 @@
 #include <string>
 #include <thread>
 #include <cassert>
+#include "alloutil/Log.hpp"
 
 struct Broadcaster {
   struct sockaddr_in address;
@@ -36,6 +37,8 @@ struct Broadcaster {
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
     address.sin_addr.s_addr = inet_addr(ip);
+
+    LOG("broadcasting to %s on port %d", ip, port);
   }
 
   void send(unsigned char* data) {
