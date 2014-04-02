@@ -1,15 +1,15 @@
 #ifndef INCLUDE_AL_BROADCAST_APP_HPP
 #define INCLUDE_AL_BROADCAST_APP_HPP
 
-#include "alloutil/Broadcaster.hpp"
-#include "alloutil/Checksum.hpp"
-#include "alloutil/HostRole.hpp"
-#include "alloutil/Packet.hpp"
-#include "alloutil/Queue.hpp"
-#include "alloutil/Receiver.hpp"
-#include "alloutil/Selector.hpp"
-#include "alloutil/Time.hpp"
-#include "alloutil/Log.hpp"
+#include "Framework/Broadcaster.hpp"
+#include "Framework/Checksum.hpp"
+#include "Framework/Configuration.hpp"
+#include "Framework/Packet.hpp"
+#include "Framework/Queue.hpp"
+#include "Framework/Receiver.hpp"
+#include "Framework/Selector.hpp"
+#include "Framework/Time.hpp"
+#include "Framework/Log.hpp"
 #include "alloutil/al_OmniApp.hpp"
 #include "allocore/sound/al_Ambisonics.hpp"
 #include "allocore/sound/al_AudioScene.hpp"
@@ -84,7 +84,7 @@ struct BroadcastApp : OmniApp {
   thread simulate, broadcast, receive;
   Queue<STATE> simulateBroadcast, receiveGraphicsRender, receiveAudioRender;
 
-  HostRole hostRole;
+  Configuration configuration;
   bool done, waitingToStart;
 
   Listener* sceneListener;
@@ -95,11 +95,11 @@ struct BroadcastApp : OmniApp {
 
   virtual ~BroadcastApp() {
     done = true;
-    if (hostRole.isSimulator) {
+    if (configuration.simulation) {
       simulate.join();
       broadcast.join();
     }
-    if (hostRole.isGraphicsRenderer || hostRole.isAudioRenderer) receive.join();
+    if (configuration.visual || configuration.audio) receive.join();
   }
 
   BroadcastApp() {
@@ -113,18 +113,16 @@ struct BroadcastApp : OmniApp {
     done = false;
     waitingToStart = true;
 
-    hostRole.init();
-
     memset(&simulationState, 0, sizeof(STATE));
     memset(&graphicsRenderState, 0, sizeof(STATE));
     memset(&audioRenderState, 0, sizeof(STATE));
 
-    if (hostRole.isSimulator) {
+    if (configuration.simulation) {
       LOG("BroadcastApp - create simulator broadcast thread");
       static auto broadcastFunction = [&]() {
         Broadcaster broadcaster;
-        broadcaster.init(PACKET_SIZE, hostRole.broadcastIpAddress(), PORT);
-        LOG("BroadcastApp - broadcasting to %s", hostRole.broadcastIpAddress());
+        broadcaster.init(PACKET_SIZE, configuration.broadcast, PORT);
+        LOG("BroadcastApp - broadcasting to %s", configuration.broadcast);
         Packet<PACKET_SIZE> p;
         STATE* state = new STATE;
         int frame = 0;
@@ -172,7 +170,7 @@ struct BroadcastApp : OmniApp {
       simulate = thread(simulationFunction);
     }
 
-    if (hostRole.isGraphicsRenderer || hostRole.isAudioRenderer) {
+    if (configuration.visual || configuration.audio) {
       LOG("BroadcastApp - create renderer receive thread");
       static auto receiveFunction = [&]() {
         Receiver receiver;
@@ -215,21 +213,21 @@ struct BroadcastApp : OmniApp {
             }
           }
 
-          if (hostRole.isGraphicsRenderer)
+          if (configuration.visual)
             receiveGraphicsRender.push(*state);
 
-          if (hostRole.isAudioRenderer)
+          if (configuration.audio)
             receiveAudioRender.push(*state);
         }
       };
       receive = thread(receiveFunction);
     }
 
-    if (hostRole.isGraphicsRenderer)
+    if (configuration.visual)
       initWindow(Window::Dim(800, 600), "", 60.0);
 
-    if (hostRole.isAudioRenderer && hostRole.isSimulator &&
-        hostRole.isGraphicsRenderer) {
+    if (configuration.audio && configuration.simulation &&
+        configuration.visual) {
       // This is a laptop; init with default 2 channels
       scene = new AudioScene(2, 1, 512);
       sceneListener = scene->createListener(2);
@@ -239,7 +237,7 @@ struct BroadcastApp : OmniApp {
                                   localSpeaker[i].azimuth,
                                   localSpeaker[i].elevation);
       initAudio();
-    } else if (hostRole.isAudioRenderer) {
+    } else if (configuration.audio) {
       // This is the AlloSphere audio machine; open 60 channels
       scene = new AudioScene(3, 3, 512);
       sceneListener = scene->createListener(54);
@@ -268,7 +266,7 @@ struct BroadcastApp : OmniApp {
   virtual void onSound(AudioIOData& io, const STATE& state) = 0;
 
   virtual void onAnimate(double dt) {
-    if (hostRole.isGraphicsRenderer) {
+    if (configuration.visual) {
       int popCount = 0;
       while (receiveGraphicsRender.pop(graphicsRenderState)) popCount++;
       onRendererLocal(dt, graphicsRenderState, popCount);

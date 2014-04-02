@@ -8,11 +8,10 @@
 #include <cstdio>        // linux
 #include <string>
 #include <cassert>
-#include "alloutil/Log.hpp"
+#include "Framework/Log.hpp"
 
 struct Receiver {
   int fileDescriptor;
-  float waitingTime;
 
   void init(unsigned port) {
 
@@ -20,8 +19,6 @@ struct Receiver {
       perror("socket");
       exit(-1);
     }
-
-    waitingTime = 0;
 
     // magic
     //
@@ -62,19 +59,12 @@ struct Receiver {
 
     int rv = select(fileDescriptor + 1, &fileDescriptorSet, 0, 0, &tv);
 
-    // XXX so is tv now the actual time that select waited?
-    //
-    float waited = tv.tv_sec + tv.tv_usec / 1000000.0f;
-
     if (rv == -1) {
       LOG("select error %d", errno);
       return false;
     } else if (rv == 0) {
-      waitingTime += timeOut;
       return false;
     } else {
-      //LOG("waited for %fs for packet", waited + waitingTime);
-      waitingTime = 0;
       int bytesReceived = recvfrom(fileDescriptor, buffer, packetSize, 0, 0, 0);
       if (bytesReceived == -1) {
         perror("recvfrom");
