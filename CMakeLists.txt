@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(app_with_state)
 
-set(CMAKE_CXX_FLAGS                "-Wall -std=c++11 -Wno-deprecated-declarations")
+#set(CMAKE_CXX_FLAGS                "-Wall -std=c++11 -Wno-deprecated-declarations")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -Wno-deprecated-declarations")
 set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
 set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
@@ -11,6 +12,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_mo
 
 find_package(Crypto REQUIRED)
 set(libraries ${libraries} ${CRYPTO_LIBRARIES})
+find_package(ZLIB REQUIRED)
+set(libraries ${libraries} ${ZLIB_LIBRARIES})
+include_directories(${ZLIB_INCLUDE_DIRS} )
 include_directories(${CRYPTO_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
