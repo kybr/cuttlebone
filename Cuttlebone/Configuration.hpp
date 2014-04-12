@@ -35,10 +35,9 @@ ConfigurationData defaultConfigurationData[] = {
     {"gr14", "", false, false, true, false}, };
 
 struct Configuration : ConfigurationData {
+  bool foundSelf;
 
-  Configuration() : Configuration(defaultConfigurationData) {
-    LOG("using default configuration");
-  }
+  Configuration() : Configuration(defaultConfigurationData) {}
 
   template <unsigned N>
   Configuration(ConfigurationData (&configurationCandidate)[N]) {
@@ -50,7 +49,7 @@ struct Configuration : ConfigurationData {
     }
 
     unsigned self = 0;
-    bool foundSelf = false;
+    foundSelf = false;
     for (unsigned i = 0; i < N; ++i)
       if (strncmp(configurationCandidate[i].name, hostname, 256) == 0) {
         foundSelf = true;
@@ -66,17 +65,22 @@ struct Configuration : ConfigurationData {
       device = configurationCandidate[self].device;
       broadcast = configurationCandidate[self].broadcast;
 
-      LOG("i am %s; i do%s%s%s%s.", hostname, simulation ? " simulation" : "",
-          audio ? " audio" : "", visual ? " visual" : "",
-          device ? " device" : "");
     } else {
-      LOG("running in \"laptop mode\".");
       name = hostname;
       simulation = true;
       audio = true;
       visual = true;
       device = true;
     }
+  }
+
+  void log() {
+    if (foundSelf)
+      LOG("i am %s; i do%s%s%s%s.", name, simulation ? " simulation" : "",
+          audio ? " audio" : "", visual ? " visual" : "",
+          device ? " device" : "");
+    else
+      LOG("running in \"laptop mode\".");
   }
 };
 

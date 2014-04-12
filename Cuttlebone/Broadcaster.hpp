@@ -16,7 +16,8 @@ struct Broadcaster {
   int fileDescriptor;
   unsigned packetSize;
 
-  void init(unsigned packetSize, const char* ip, int port) {
+  void init(unsigned packetSize, const char* ip, int port,
+            bool useLargeWindow = true) {
 
     this->packetSize = packetSize;
 
@@ -26,12 +27,14 @@ struct Broadcaster {
     setsockopt(fileDescriptor, SOL_SOCKET, SO_BROADCAST, &broadcast,
                sizeof(broadcast));
 
-    int window = 16777216;
-    if (setsockopt(fileDescriptor, SOL_SOCKET, SO_SNDBUF, &window, sizeof(int)) == -1) {
-    fprintf(stderr, "Error setting socket opts: %s\n", strerror(errno));
+    if (useLargeWindow) {
+      int window = 16777216;
+      if (setsockopt(fileDescriptor, SOL_SOCKET, SO_SNDBUF, &window,
+                     sizeof(int)) == -1) {
+        fprintf(stderr, "Error setting socket opts: %s\n", strerror(errno));
+      }
+      printf("%d byte send buffer (aka \"window\")\n", window);
     }
-    printf("%d byte send buffer (aka \"window\")\n", window);
-
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;

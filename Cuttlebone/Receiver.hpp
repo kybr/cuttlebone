@@ -13,20 +13,22 @@
 struct Receiver {
   int fileDescriptor;
 
-  void init(unsigned port) {
+  void init(unsigned port, bool useLargeWindow = true) {
 
     if ((fileDescriptor = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
       perror("socket");
       exit(-1);
     }
 
-    // magic
-    //
-    int window = 16777216;
-    if (setsockopt(fileDescriptor, SOL_SOCKET, SO_RCVBUF, &window, sizeof(int)) == -1) {
-      fprintf(stderr, "Error setting socket opts: %s\n", strerror(errno));
+    if (useLargeWindow) {
+      // magic
+      //
+      int window = 16777216;
+      if (setsockopt(fileDescriptor, SOL_SOCKET, SO_RCVBUF, &window, sizeof(int)) == -1) {
+        fprintf(stderr, "Error setting socket opts: %s\n", strerror(errno));
+      }
+      printf("%d byte receive buffer (aka \"window\")\n", window);
     }
-    printf("%d byte receive buffer (aka \"window\")\n", window);
 
     struct sockaddr_in address;
     memset(&address, 0, sizeof(address));
