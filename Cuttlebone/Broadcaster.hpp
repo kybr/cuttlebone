@@ -45,8 +45,11 @@ struct Broadcaster {
   }
 
   void send(unsigned char* data) {
-    assert(sendto(fileDescriptor, data, packetSize, 0,
-                  (struct sockaddr*)&address, sizeof(address)) >= 0);
+    if (sendto(fileDescriptor, data, packetSize, 0, (struct sockaddr*)&address,
+               sizeof(address)) >= 0) {
+    } else {
+      LOG("failed to SEND packet");
+    }
   }
 };
 

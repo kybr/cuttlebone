@@ -41,9 +41,13 @@ struct App : Timer {
   bool waitingToStart;
   STATE* audioRenderState;
   STATE* graphicsRenderState;
+  STATE* simulationState;
+  Timestamp<> ts;
+  float last, now;
 
   Queue<STATE> simulateBroadcast, receiveGraphicsRender, receiveAudioRender;
-  thread simulate, broadcast, receive;
+  // thread simulate, broadcast, receive;
+  thread broadcast, receive;
 
   Configuration configuration;
 
@@ -52,12 +56,15 @@ struct App : Timer {
         done(false),
         waitingToStart(true),
         audioRenderState(new STATE),
-        graphicsRenderState(new STATE) {}
+        graphicsRenderState(new STATE),
+        simulationState(new STATE),
+        last(0),
+        now(0) {}
 
   virtual ~App() {
     done = true;
     if (configuration.simulation) {
-      simulate.join();
+      // simulate.join();
       broadcast.join();
     }
     if (configuration.visual || configuration.audio) receive.join();
@@ -92,6 +99,7 @@ struct App : Timer {
         }
       });
 
+      /*
       simulate = thread([&]() {
         Timestamp<> ts;
         double last = 0, now = 0;
@@ -110,6 +118,7 @@ struct App : Timer {
           simulateBroadcast.push(*state);
         }
       });
+      */
     }
 
     if (configuration.visual || configuration.audio) {
@@ -175,6 +184,11 @@ struct App : Timer {
 
     waitingToStart = false;
 
+    if (configuration.simulation) {
+      onSimulatorInit(*simulationState);
+      Timer::start(1 / 60.0f);
+    }
+
     getchar();
   }
 
@@ -186,7 +200,14 @@ struct App : Timer {
     }
   }
 
-  void onTimer() {}
+  // XXX
+  void onTimer() {
+    LOG("got here");
+    last = now;
+    now = ts.stamp();
+    onSimulate(now - last, *simulationState);
+    simulateBroadcast.push(*simulationState);
+  }
 
   virtual void onDraw(Graphics& g) { onDraw(g, *graphicsRenderState); }
 

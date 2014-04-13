@@ -1,4 +1,4 @@
-#define LOG_FILE ("/tmp/log.txt")
+//#define LOG_FILE ("/tmp/log.txt")
 #include "Framework/App.hpp"
 #include <cstring>  // memset
 
@@ -21,10 +21,10 @@
 
 ConfigurationData configurationData[] = {
   {"image", "", false, false, true, false},
-  {"quux.zzz", "192.168.1.255", true, false, false, false},
+  {"quux.zzz", "192.168.2.255", true, false, false, false},
 };
 
-#define N (10000)
+#define N (10243)
 
 struct Vec3f {
   float x, y, z;
