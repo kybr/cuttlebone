@@ -24,7 +24,8 @@ ConfigurationData configurationData[] = {
   {"quux.zzz", "192.168.2.255", true, false, false, false},
 };
 
-#define N (10243)
+//#define N (10243)
+#define N (300)
 
 struct Vec3f {
   float x, y, z;
@@ -44,6 +45,7 @@ struct Vec3f {
 };
 
 struct State {
+  float r;
   Vec3f position[N];
 };
 
@@ -66,6 +68,10 @@ struct MyApp : App<State> {
       state.position[i] += v;
       state.position[i] *= 0.1f;
     }
+
+    static float time = 0;
+    time += dt / 10;
+    state.r = time - (int)time;
   }
 
   virtual void onRendererLocal(float dt, State& state, int popCount) {

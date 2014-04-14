@@ -31,7 +31,7 @@ int main() {
   server.sin_port = htons(atoi("10101"));
   server.sin_addr.s_addr = INADDR_ANY;
 
-  if (bind(s, (struct sockaddr *)&server , sizeof(server)) < 0) {
+  if (::bind(s, (struct sockaddr *)&server , sizeof(server)) < 0) {
     fprintf(stderr, "bind()\n");
     exit(1);
   }

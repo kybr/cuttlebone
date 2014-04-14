@@ -47,7 +47,7 @@ struct App : Timer {
 
   Queue<STATE> simulateBroadcast, receiveGraphicsRender, receiveAudioRender;
   // thread simulate, broadcast, receive;
-  thread broadcast, receive;
+  thread broadcast, receive, render;
 
   Configuration configuration;
 
@@ -68,9 +68,10 @@ struct App : Timer {
       broadcast.join();
     }
     if (configuration.visual || configuration.audio) receive.join();
+    if (configuration.visual) render.join();
   }
 
-  void start() {
+  virtual void start() {
     if (configuration.simulation) {
       broadcast = thread([&]() {
         Broadcaster broadcaster;
@@ -98,27 +99,6 @@ struct App : Timer {
           }
         }
       });
-
-      /*
-      simulate = thread([&]() {
-        Timestamp<> ts;
-        double last = 0, now = 0;
-        STATE* state = new STATE;
-
-        while (waitingToStart) {
-          usleep(LITTLE_WAIT_TIME_US);
-        }
-
-        onSimulatorInit(*state);
-        now = ts.stamp();
-        while (!done) {
-          last = now;
-          now = ts.stamp();
-          onSimulate(now - last, *state);
-          simulateBroadcast.push(*state);
-        }
-      });
-      */
     }
 
     if (configuration.visual || configuration.audio) {
@@ -173,6 +153,28 @@ struct App : Timer {
       });
     }
 
+    if (configuration.visual) {
+      render = thread([&]() {
+        while (waitingToStart) {
+          usleep(LITTLE_WAIT_TIME_US);
+        }
+
+        while (!done) {
+          int popCount = 0;
+          while (receiveGraphicsRender.pop(*graphicsRenderState))
+            popCount++;
+
+          if (popCount) {
+            static float localLast = 0, localNow = 0;
+            localLast = localNow;
+            localNow = ts.stamp();
+            onRendererLocal(localNow - localLast, *graphicsRenderState,
+                            popCount);
+          }
+        }
+      });
+    }
+
     // if (configuration.visual)
     //  ;  // initWindow(Window::Dim(800, 600), "", 60.0);
 
@@ -190,14 +192,6 @@ struct App : Timer {
     }
 
     getchar();
-  }
-
-  virtual void onAnimate(double dt) {
-    if (configuration.visual) {
-      int popCount = 0;
-      while (receiveGraphicsRender.pop(*graphicsRenderState)) popCount++;
-      onRendererLocal(dt, *graphicsRenderState, popCount);
-    }
   }
 
   // XXX
