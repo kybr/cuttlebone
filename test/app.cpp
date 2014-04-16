@@ -1,77 +1,87 @@
 //#define LOG_FILE ("/tmp/log.txt")
 #include "Framework/App.hpp"
 #include <cstring>  // memset
+#include <string>
+#include <sstream>
+#include <cmath>
 
-// const char* name;
-// const char* broadcast;
-// bool simulation, audio, visual, device;
-//ConfigurationData configurationData[] = {
-//    {"00", "192.168.7.255", true, false, false, false},
-//    {"01", "", false, false, true, false},
-//    {"02", "", false, false, true, false},
-//    {"03", "", false, false, true, false},
-//    {"10", "", false, false, true, false},
-//    {"11", "", false, false, true, false},
-//    {"12", "", false, false, true, false},
-//    {"13", "", false, false, true, false},
-//    {"20", "", false, false, true, false},
-//    {"21", "", false, false, true, false},
-//    {"22", "", false, false, true, false},
-//    {"23", "", false, false, true, false}, };
+#define SK (0.03f)
+#define NK (0.03f)
+#define D (0.003f)
+
 
 ConfigurationData configurationData[] = {
-  {"image", "", false, false, true, false},
-  {"quux.zzz", "192.168.2.255", true, false, false, false},
-};
+    {"00", "192.168.7.255", true, false, false, false},
+    {"image", "", false, false, true, false},
+    {"quux.zzz", "192.168.2.255", true, false, false, false},
+    {"quux.local", "192.168.2.255", true, false, false, false},
+    {"quux.cf", "192.168.7.255", true, false, false, false}, };
 
-//#define N (10243)
-#define N (300)
+#include "BlobState.hpp"
 
-struct Vec3f {
-  float x, y, z;
-
-  Vec3f& operator+=(const Vec3f& right) {
-    x += right.x;
-    y += right.y;
-    z += right.z;
-    return *this;
-  }
-  Vec3f& operator*=(const float right) {
-    x *= right;
-    y *= right;
-    z *= right;
-    return *this;
-  }
-};
-
-struct State {
-  float r;
-  Vec3f position[N];
-};
+float r() {
+  return rand() / (float)RAND_MAX;
+}
 
 struct MyApp : App<State> {
   MyApp() {
-    App<State>::shouldLog = true;
+    // App<State>::shouldLog = true;
     configuration = Configuration(configurationData);
     configuration.log();
     LOG("State is %d bytes", sizeof(State));
   }
 
+  State original;
+  Vertex velocity[N];
+
+  vector<vector<unsigned short> > neighbor;
+
   virtual void onSimulatorInit(State& state) {
     memset(&state, 0, sizeof(state));
+
+    vector<unsigned short> tri, lin;
+    load(ICOSPHERE_FILE, state, tri, lin, neighbor);
+    memcpy(&original, &state, sizeof(State));
+    memset(&velocity, 0, sizeof(Vertex) * N);
   }
 
   virtual void onSimulate(float dt, State& state) {
-    LOG("onSimulate(%f)", dt);
-    Vec3f v{0.001f, 0.001f, 0.001f};
-    for (int i = 0; i < N; ++i) {
-      state.position[i] += v;
-      state.position[i] *= 0.1f;
+    static float period = 0;
+    static int simCount = 0;
+    if (period > 1.0) {
+      period -= 1.0;
+      LOG("Sim: %d", simCount);
+      simCount = 0;
+    }
+    period += dt;
+    simCount++;
+
+    static int n = 0;
+
+    if ((n % 700) == 0) {
+      Vertex v{r(), r(), r()};
+      Vertex a{0.5f, 0.5f, 0.5f};
+      v -= a;
+      v *= 0.3f;
+      velocity[rand() % N] += v;
+      LOG("poke!");
+    }
+    n++;
+
+    for (int i = 0; i < N; i++) {
+      Vertex& v = state.position[i];
+      Vertex force = (v - original.position[i]) * -SK;
+
+      for (int k = 0; k < neighbor[i].size(); k++) {
+        Vertex& n = state.position[neighbor[i][k]];
+        force += (v - n) * -NK;
+      }
+
+      velocity[i] += force * D;
     }
 
-    static float time = 0;
-    time += dt / 10;
-    state.r = time - (int)time;
+    for (int i = 0; i < N; i++)
+      state.position[i] += velocity[i];
   }
 
   virtual void onRendererLocal(float dt, State& state, int popCount) {
@@ -82,6 +92,7 @@ struct MyApp : App<State> {
 };
 
 int main() {
+  LOG("main()");
   MyApp app;
   app.start();
 }

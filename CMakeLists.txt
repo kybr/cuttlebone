@@ -17,6 +17,7 @@ set(libraries ${libraries} ${ZLIB_LIBRARIES})
 include_directories(${ZLIB_INCLUDE_DIRS} )
 include_directories(${CRYPTO_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ms_demos)
 
 if(UNIX AND NOT APPLE)
   set(libraries ${libraries} rt pthread)

@@ -196,7 +196,6 @@ struct App : Timer {
 
   // XXX
   void onTimer() {
-    LOG("got here");
     last = now;
     now = ts.stamp();
     onSimulate(now - last, *simulationState);
