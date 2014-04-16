@@ -5,10 +5,10 @@
 #include <sstream>
 #include <cmath>
 
-#define SK (0.03f)
-#define NK (0.03f)
-#define D (0.003f)
-
+#define SK (0.01f)
+#define NK (0.1f)
+#define D (0.97)
+//.01, .1, .765
 
 ConfigurationData configurationData[] = {
     {"00", "192.168.7.255", true, false, false, false},
@@ -19,9 +19,7 @@ ConfigurationData configurationData[] = {
 
 #include "BlobState.hpp"
 
-float r() {
-  return rand() / (float)RAND_MAX;
-}
+float r() { return 2.0f * rand() / RAND_MAX - 1.0f; }
 
 struct MyApp : App<State> {
   MyApp() {
@@ -30,6 +28,8 @@ struct MyApp : App<State> {
     configuration.log();
     LOG("State is %d bytes", sizeof(State));
   }
+
+  float d, sk, nk;
 
   State original;
   Vertex velocity[N];
@@ -58,15 +58,20 @@ struct MyApp : App<State> {
 
     static int n = 0;
 
-    if ((n % 700) == 0) {
+    if ((n % 300) == 0) {
       Vertex v{r(), r(), r()};
-      Vertex a{0.5f, 0.5f, 0.5f};
-      v -= a;
-      v *= 0.3f;
-      velocity[rand() % N] += v;
+      v *= 4.0f;
+      int randomVertex = rand() % N;
+      state.position[randomVertex] += v;
+      v *= 0.7f;
+      for (auto n : neighbor[randomVertex]) state.position[n] += v;
       LOG("poke!");
     }
     n++;
+
+    static float time = 0;
+    state.x = cos(time / 5) * 1.3;
+    time += dt;
 
     for (int i = 0; i < N; i++) {
       Vertex& v = state.position[i];
@@ -77,11 +82,11 @@ struct MyApp : App<State> {
         force += (v - n) * -NK;
       }
 
-      velocity[i] += force * D;
+      velocity[i] += force;
+      velocity[i] *= D;
     }
 
-    for (int i = 0; i < N; i++)
-      state.position[i] += velocity[i];
+    for (int i = 0; i < N; i++) state.position[i] += velocity[i];
   }
 
   virtual void onRendererLocal(float dt, State& state, int popCount) {
