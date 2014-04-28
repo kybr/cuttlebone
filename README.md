@@ -8,6 +8,10 @@ This is a framework / toolkit for developing distributing multimedia application
 - POSIX
 - libssl-dev package on linux
 
+## building (with AlloSystem)
+
+Using the latest devel branch of AlloSystem, configure the cmake system so that it will find the Cuttlebone headers. Then, include `Cuttlebone/al_BroadcastOmniApp.hpp` in your code and follow the example of `example/use_broadcast_app.cpp`. 
+
 ## building (stand alone)
 
     mkdir build
@@ -15,9 +19,4 @@ This is a framework / toolkit for developing distributing multimedia application
     cmake ..
     make
     ./app
-
-## building (AlloSystem)
-
-Using the latest devel branch of AlloSystem, configure the cmake system so that it will find the Cuttlebone headers.
-
 
