@@ -1,5 +1,5 @@
-#include "Framework/Receiver.hpp"
-#include "Framework/Checksum.hpp"
+#include "Cuttlebone/Receiver.hpp"
+#include "Cuttlebone/Checksum.hpp"
 #include <unistd.h>  // sleep()
 
 unsigned char* buffer;

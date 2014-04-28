@@ -1,5 +1,5 @@
-#include "Framework/Packet.hpp"
-#include "Framework/Checksum.hpp"
+#include "Cuttlebone/Packet.hpp"
+#include "Cuttlebone/Checksum.hpp"
 #include <iostream>
 #include <stdlib.h>
 using namespace std;

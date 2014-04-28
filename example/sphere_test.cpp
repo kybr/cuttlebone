@@ -1,10 +1,10 @@
-#include "Framework/Configuration.hpp"
-#include "Framework/Packet.hpp"
-#include "Framework/Checksum.hpp"
-#include "Framework/Time.hpp"
-#include "Framework/Receiver.hpp"
-#include "Framework/Broadcaster.hpp"
-#include "Framework/Queue.hpp"
+#include "Cuttlebone/Configuration.hpp"
+#include "Cuttlebone/Packet.hpp"
+#include "Cuttlebone/Checksum.hpp"
+#include "Cuttlebone/Time.hpp"
+#include "Cuttlebone/Receiver.hpp"
+#include "Cuttlebone/Broadcaster.hpp"
+#include "Cuttlebone/Queue.hpp"
 
 #include <unistd.h>  // usleep
 #include <iostream>  // cout

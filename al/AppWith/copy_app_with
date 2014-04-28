@@ -1,4 +1,0 @@
-#/bin/sh
-
-cd ..
-cp app_with_state/al_AppWith.hpp AlloSystem/allocore/allocore/io/al_AppWith.hpp

@@ -1,18 +1,23 @@
-# App With State
+# Cuttlebone
 
-here i'm trying to make a system for distributing application state information
-to a all hosts on a small, simple network using broadcast ip. my hope is that
-this system will be used in the AlloSphere and on Cuttlefish.
+This is a framework / toolkit for developing distributing multimedia applications. Use the BroadcastApp<State> to distribute application state information to all hosts on your network using udp broadcast. This system may be used with Cuttlefish or in the AlloSphere, using AlloSystem.
 
 ## dependencies
 
-i use c++11, so you'll need a compiler that supports it.
+- c++11
+- POSIX
+- libssl-dev package on linux
 
-## building
+## building (stand alone)
 
     mkdir build
     cd build
     cmake ..
     make
     ./app
+
+## building (AlloSystem)
+
+Using the latest devel branch of AlloSystem, configure the cmake system so that it will find the Cuttlebone headers.
+
 

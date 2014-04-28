@@ -1,4 +1,4 @@
-#include "Framework/Configuration.hpp"
+#include "Cuttlebone/Configuration.hpp"
 
 ConfigurationData configurationData[] = {
     {"quux", "127.0.0.1", true, true, true},

@@ -1,5 +1,5 @@
-#include "Framework/Selector.hpp"
-#include "Framework/Checksum.hpp"
+#include "Cuttlebone/Selector.hpp"
+#include "Cuttlebone/Checksum.hpp"
 #include <iostream>
 using namespace std;
 

@@ -9,7 +9,7 @@
 
 #include <stdlib.h>  // perror
 #include <string.h>  // strncmp
-#include "Framework/Log.hpp"
+#include "Cuttlebone/Log.hpp"
 
 struct ConfigurationData {
   const char* name;

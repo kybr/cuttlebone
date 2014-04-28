@@ -1,6 +1,6 @@
-#include "Framework/Timer.hpp"
-#include "Framework/Broadcaster.hpp"
-#include "Framework/Checksum.hpp"
+#include "Cuttlebone/Timer.hpp"
+#include "Cuttlebone/Broadcaster.hpp"
+#include "Cuttlebone/Checksum.hpp"
 
 unsigned char* buffer;
 

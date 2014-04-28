@@ -5,7 +5,7 @@ using namespace std;
 
 //#define LOG_FILE ("/tmp/file.txt") // LOG to a file instead of standard out
 //#define DONT_COMPILE_LOG // like LOG never existed
-#include "Framework/Log.hpp"
+#include "Cuttlebone/Log.hpp"
 
 int main(int argc, char* argv[]) {
   LOG("main|started");

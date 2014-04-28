@@ -6,8 +6,8 @@
 #include <cstdio>
 
 #define LOG_FILE ("send.txt")
-#include "Framework/Log.hpp"
-#include "Framework/Broadcaster.hpp"
+#include "Cuttlebone/Log.hpp"
+#include "Cuttlebone/Broadcaster.hpp"
 
 #define N (2048)
 
