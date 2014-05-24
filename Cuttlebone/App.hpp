@@ -1,16 +1,16 @@
 #ifndef INCLUDE_APP_HPP
 #define INCLUDE_APP_HPP
 
-#include "Framework/Broadcaster.hpp"
-#include "Framework/Checksum.hpp"
-#include "Framework/Configuration.hpp"
-#include "Framework/Packet.hpp"
-#include "Framework/Queue.hpp"
-#include "Framework/Receiver.hpp"
-#include "Framework/Selector.hpp"
-#include "Framework/Time.hpp"
-#include "Framework/Timer.hpp"
-#include "Framework/Log.hpp"
+#include "Cuttlebone/Broadcaster.hpp"
+#include "Cuttlebone/Checksum.hpp"
+#include "Cuttlebone/Configuration.hpp"
+#include "Cuttlebone/Packet.hpp"
+#include "Cuttlebone/Queue.hpp"
+#include "Cuttlebone/Receiver.hpp"
+#include "Cuttlebone/Selector.hpp"
+#include "Cuttlebone/Time.hpp"
+#include "Cuttlebone/Timer.hpp"
+#include "Cuttlebone/Log.hpp"
 
 #include <thread>
 using namespace std;
