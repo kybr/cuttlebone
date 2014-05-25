@@ -37,7 +37,9 @@ ConfigurationData defaultConfigurationData[] = {
 struct Configuration : ConfigurationData {
   bool foundSelf;
 
-  Configuration() : Configuration(defaultConfigurationData) {}
+  Configuration() : Configuration(defaultConfigurationData) {
+    LOG("loaded default configuration");
+  }
 
   template <unsigned N>
   Configuration(ConfigurationData (&configurationCandidate)[N]) {
@@ -67,11 +69,13 @@ struct Configuration : ConfigurationData {
 
     } else {
       name = hostname;
+      broadcast = "127.0.0.1";
       simulation = true;
       audio = true;
       visual = true;
       device = true;
     }
+    log();
   }
 
   void log() {

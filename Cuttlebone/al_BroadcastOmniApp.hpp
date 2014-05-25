@@ -102,13 +102,9 @@ struct BroadcastApp : OmniApp {
     if (configuration.visual || configuration.audio) receive.join();
   }
 
-  BroadcastApp() {
-    // XXX
-    //   this whole constructor is bullshit. the threads/lambdas must be moved
-    //   to some sort of start method because they depend on BroadcastApp
-    //   resources that are not necessarily ready.
+  BroadcastApp() {}
 
-    LOG("BroadcastApp - constructor start");
+  virtual void start() {
 
     done = false;
     waitingToStart = true;
@@ -118,8 +114,10 @@ struct BroadcastApp : OmniApp {
     memset(&audioRenderState, 0, sizeof(STATE));
 
     if (configuration.simulation) {
+
       LOG("BroadcastApp - create simulator broadcast thread");
-      static auto broadcastFunction = [&]() {
+
+      broadcast = thread([&]() {
         Broadcaster broadcaster;
         broadcaster.init(PACKET_SIZE, configuration.broadcast, PORT);
         LOG("BroadcastApp - broadcasting to %s", configuration.broadcast);
@@ -145,10 +143,9 @@ struct BroadcastApp : OmniApp {
             frame++;
           }
         }
-      };
-      broadcast = thread(broadcastFunction);
+      });
 
-      static auto simulationFunction = [&]() {
+      simulate = thread([&]() {
         Timestamp<> ts;
         double last = 0, now = 0;
         STATE* state = new STATE;
@@ -165,14 +162,12 @@ struct BroadcastApp : OmniApp {
           onSimulate(now - last, *state);
           simulateBroadcast.push(*state);
         }
-      };
-
-      simulate = thread(simulationFunction);
+      });
     }
 
     if (configuration.visual || configuration.audio) {
       LOG("BroadcastApp - create renderer receive thread");
-      static auto receiveFunction = [&]() {
+      receive = thread([&]() {
         Receiver receiver;
         receiver.init(PORT);
         Packet<PACKET_SIZE> p;
@@ -219,12 +214,10 @@ struct BroadcastApp : OmniApp {
           if (configuration.audio)
             receiveAudioRender.push(*state);
         }
-      };
-      receive = thread(receiveFunction);
+      });
     }
 
-    if (configuration.visual)
-      initWindow(Window::Dim(800, 600), "", 60.0);
+    if (configuration.visual) initWindow(Window::Dim(800, 600), "", 60.0);
 
     if (configuration.audio && configuration.simulation &&
         configuration.visual) {
@@ -256,7 +249,8 @@ struct BroadcastApp : OmniApp {
                                   localSpeaker[i].elevation);
     }
 
-    LOG("BroadcastApp - constructor end");
+    waitingToStart = false;
+    OmniApp::start();
   }
 
   virtual void onSimulatorInit(STATE& state) = 0;
