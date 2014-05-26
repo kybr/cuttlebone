@@ -2,7 +2,6 @@
 #define INCLUDE_AL_BROADCAST_APP_HPP
 
 #include "Cuttlebone/Broadcaster.hpp"
-#include "Cuttlebone/Checksum.hpp"
 #include "Cuttlebone/Configuration.hpp"
 #include "Cuttlebone/Packet.hpp"
 #include "Cuttlebone/Queue.hpp"

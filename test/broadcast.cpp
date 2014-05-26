@@ -1,16 +1,12 @@
 #include "Cuttlebone/Timer.hpp"
 #include "Cuttlebone/Broadcaster.hpp"
-#include "Cuttlebone/Checksum.hpp"
 
 unsigned char* buffer;
 
-struct App : Timer, Broadcaster, Checksum {
+struct App : Timer, Broadcaster {
   void onTimer() {
-    checksum(buffer, packetSize);
     //    printf("\033[u\033[2K\033[s");
-    printf("%03u | ", buffer[0]);
-    print();
-    printf("\n");
+    printf("%03u\n", buffer[0]);
     fflush(stdout);
     send(buffer);
     for (unsigned i = 0; i < packetSize; i++) buffer[i]++;
@@ -30,7 +26,7 @@ int main(int argc, char* argv[]) {
   printf("usage: %s packetSize timerPeriod ip port\n", argv[0]);
   printf("broadcasting %u bytes to %s:%u every %f seconds\n", packetSize, ip,
          port, timerPeriod);
-  printf("#   | sha1 sum\n");
+  printf("#\n");
 
   buffer = new unsigned char[packetSize];
   for (unsigned i = 0; i < packetSize; i++)

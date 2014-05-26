@@ -1,15 +1,11 @@
 #include "Cuttlebone/Selector.hpp"
-#include "Cuttlebone/Checksum.hpp"
 #include <iostream>
 using namespace std;
 
-struct App : Selector<App>, Checksum {
+struct App : Selector<App> {
   unsigned char* buffer;
   void onNewBuffer() {
-    checksum(buffer, packetSize);
-    printf("%03u | ", buffer[0]);
-    print();
-    printf("\n");
+    printf("%03u\n", buffer[0]);
     fflush(stdout);
   }
 };
@@ -25,7 +21,7 @@ int main(int argc, char* argv[]) {
   printf("usage: %s packetSize selectTimeout port\n", argv[0]);
   printf("selecting %u bytes from port %u with %f second timeout\n", packetSize,
          port, selectTimeout);
-  printf("#   | sha1 sum\n");
+  printf("#\n");
 
   App app;
   app.buffer = new unsigned char[packetSize];

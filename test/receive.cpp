@@ -1,5 +1,4 @@
 #include "Cuttlebone/Receiver.hpp"
-#include "Cuttlebone/Checksum.hpp"
 #include <unistd.h>  // sleep()
 
 unsigned char* buffer;
@@ -15,19 +14,13 @@ int main(int argc, char* argv[]) {
   printf("usage: %s packetSize timeOut port\n", argv[0]);
   printf("receiving %u bytes from on port %u every %f seconds\n", packetSize,
          port, timeOut);
-  printf("#   | sha1 sum\n");
+  printf("#\n");
 
-  Checksum c;
   Receiver receiver;
   receiver.init(port);
   unsigned char buffer[packetSize];
 
-  while (true) {
-    if (receiver.receive(buffer, packetSize, timeOut)) {
-      c.checksum(buffer, packetSize);
-      printf("%03u | ", buffer[0]);
-      c.print();
-      printf("\n");
-    }
-  }
+  while (true)
+    if (receiver.receive(buffer, packetSize, timeOut))
+      printf("%03u\n", buffer[0]);
 }

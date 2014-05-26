@@ -1,5 +1,4 @@
 #include "Cuttlebone/Packet.hpp"
-#include "Cuttlebone/Checksum.hpp"
 #include <iostream>
 #include <stdlib.h>
 using namespace std;
@@ -15,12 +14,6 @@ int main() {
   state.zero();
   state.n = 20;
   sprintf(state.data, "this is a message to the internet. fuck.");
-
-  Checksum c;
-
-  c.checksum((unsigned char*)&state, sizeof(state));
-  c.print();
-  cout << endl;
 
   PacketMaker<State, Packet<1400>> original(state, 1);
 
@@ -40,8 +33,4 @@ int main() {
   for (unsigned i = 0; reconstructed.take(packet[i]); ++i)
     cout << packet[i].header.partNumber << " " << packet[i].header.partSize
          << endl;
-
-  c.checksum((unsigned char*)&state, sizeof(state));
-  c.print();
-  cout << endl;
 }

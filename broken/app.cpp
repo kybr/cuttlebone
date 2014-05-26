@@ -2,7 +2,6 @@
 #include "Cuttlebone/Selector.hpp"
 #include "Cuttlebone/Broadcaster.hpp"
 #include "Cuttlebone/Timer.hpp"
-#include "Cuttlebone/Checksum.hpp"
 
 /*
 const char* config[] = {"192.168.10.255", "gr01", "audio", "gr02", "gr03", "gr04",
