@@ -45,7 +45,6 @@ struct App : Timer {
   float last, now;
 
   Queue<STATE> simulateBroadcast, receiveGraphicsRender, receiveAudioRender;
-  // thread simulate, broadcast, receive;
   thread broadcast, receive, render;
 
   Configuration configuration;
@@ -191,6 +190,7 @@ struct App : Timer {
     }
 
     getchar();
+    Timer::stop();
   }
 
   // XXX
