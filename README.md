@@ -6,7 +6,6 @@ This is a framework / toolkit for developing distributing multimedia application
 
 - c++11
 - POSIX
-- libssl-dev package on linux
 
 ## building (with AlloSystem)
 
@@ -25,12 +24,16 @@ If you're on Mountain Lion (OSX 10.8), then you might have to add the -stdlib=li
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -stdlib=libc++ -Wno-deprecated-declarations")
 
 
-
 ## building (stand alone)
 
     mkdir build
     cd build
     cmake ..
     make
-    ./app
 
+### on the pi
+
+    mkdir build
+    cd build
+    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/ky.pi.osx ..
+    make
