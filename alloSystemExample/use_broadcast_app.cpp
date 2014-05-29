@@ -70,6 +70,7 @@ struct MyBroadcastedStateApp : BroadcastApp<State> {
   // is passed into this method, it is identical to the last state you wrote.
   //
   void onSimulate(double dt, State& state) {
+    LOG("simulate!");
 
     state.pose = nav();
 
@@ -107,6 +108,7 @@ struct MyBroadcastedStateApp : BroadcastApp<State> {
   // it gets drawn in onDraw.
   //
   void onRendererLocal(double dt, State& state, int popCount) {
+    LOG("render!");
     // may want some measure of how behind we are?
     // -- db
     if (! popCount) {
