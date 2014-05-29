@@ -16,7 +16,7 @@
 
 #define LITTLE_WAIT_TIME_US (100)
 
-#define PORT (8888)
+#define PORT (53097)
 
 namespace al {
 
