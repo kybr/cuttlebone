@@ -18,6 +18,7 @@ struct ConfigurationData {
 };
 
 ConfigurationData defaultConfigurationData[] = {
+    //name    broadcast         sim   audio  vis   device  
     {"gr01", "192.168.10.255", true, false, false, false},
     {"audio.10g", "", false, true, false, false},
     {"gr02", "", false, false, true, false},

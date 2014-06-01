@@ -237,15 +237,15 @@ struct BroadcastApp : OmniApp {
       for (int i = 0; i < 54; ++i)
         sceneListener->speakerPos(i, speaker[i].deviceChannel,
                                   speaker[i].azimuth, speaker[i].elevation);
-      initAudio("ECHOX5", 44100, 512, 60, 60);
+      initAudio("ECHO X5", 44100, 512, 60, 60);
     } else {
-      scene = new AudioScene(2, 1, 512);
-      sceneListener = scene->createListener(2);
-      sceneListener->numSpeakers(2);
-      for (int i = 0; i < 2; ++i)
-        sceneListener->speakerPos(i, localSpeaker[i].deviceChannel,
-                                  localSpeaker[i].azimuth,
-                                  localSpeaker[i].elevation);
+    //  scene = new AudioScene(2, 1, 512);
+    //  sceneListener = scene->createListener(2);
+    //  sceneListener->numSpeakers(2);
+    //  for (int i = 0; i < 2; ++i)
+    //    sceneListener->speakerPos(i, localSpeaker[i].deviceChannel,
+    //                              localSpeaker[i].azimuth,
+    //                              localSpeaker[i].elevation);
     }
 
     waitingToStart = false;

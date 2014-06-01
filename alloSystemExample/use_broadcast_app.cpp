@@ -141,6 +141,8 @@ struct MyBroadcastedStateApp : BroadcastApp<State> {
     gam::Sync::master().spu(audioIO().fps());
     for (int i = 0; i < N; ++i) sine[i].freq(state.frequency[i]);
 
+LOG("got here!");
+
     while (io()) {
       float s = 0;
       for (int i = 0; i < N; ++i)
