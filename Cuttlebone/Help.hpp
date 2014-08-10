@@ -206,6 +206,88 @@ struct Subscriber {
   }
 };
 
+template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059>
+struct SubscriberManualPolling {
+
+  virtual void firstRun() = 0;
+
+  bool shouldLog;
+  bool done;
+  bool waitingToStart;
+
+  Queue<STATE> receiveRender;
+  thread receive;
+
+  SubscriberManualPolling()
+      : shouldLog(false),
+        done(false),
+        waitingToStart(true) {}
+
+  virtual void start() {
+
+    receive = thread([&]() {
+      Receiver receiver;
+      receiver.init(PORT, false);
+      Packet<PACKET_SIZE> p;
+      STATE* state = new STATE;
+
+      while (waitingToStart)
+        usleep(LITTLE_WAIT_TIME_US);
+
+      while (!done) {
+
+        if (!receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f))
+          continue;
+
+      ABORT_FRAME:
+        ;
+        // wait until we're at the begining of a frame
+        if (p.header.partNumber != 0)
+          continue;
+
+        PacketTaker<STATE, Packet<PACKET_SIZE> > packetTaker(
+            *state, p.header.frameNumber);
+
+        packetTaker.take(p);
+
+        while (!packetTaker.isComplete()) {
+          if (receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
+            if (!packetTaker.take(p)) {
+              // got a part from an unexpected frame before we finished this
+              // frame
+              LOG("ABORT FRAME");
+              packetTaker.summary();
+              goto ABORT_FRAME;
+            }
+          }
+        }
+
+        if (shouldLog)
+          LOG("got packet %d", p.header.frameNumber);
+
+        receiveRender.push(*state);
+      }
+
+      delete state;
+    });
+
+    waitingToStart = false;
+
+    firstRun();
+
+    getchar();
+
+    done = true;
+    receive.join();
+  }
+
+  int getState(STATE& state) {
+    int popCount = 0;
+    while (receiveRender.pop(state)) popCount++;
+    return popCount;
+  }
+};
+
 struct FPS {
   FPS() : count(0), period(0) {}
   int count;
