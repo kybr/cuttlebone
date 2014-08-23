@@ -9,6 +9,8 @@
 #include "Cuttlebone/Log.hpp"
 #include "Cuttlebone/Broadcaster.hpp"
 
+using namespace cuttlebone;
+
 #define N (2048)
 
 int main() {

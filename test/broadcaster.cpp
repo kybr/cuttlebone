@@ -1,6 +1,8 @@
 #include "Cuttlebone/Timer.hpp"
 #include "Cuttlebone/Broadcaster.hpp"
 
+using namespace cuttlebone;
+
 unsigned char* buffer;
 
 struct App : Timer, Broadcaster {

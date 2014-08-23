@@ -1,6 +1,8 @@
 #ifndef INCLUDE_STATS_HPP
 #define INCLUDE_STATS_HPP
 
+namespace cuttlebone {
+
 struct Stats {
   const char* header;
   int count;
@@ -16,6 +18,8 @@ struct Stats {
     }
   }
 };
+
+}  // cuttlebone
 
 #endif
 

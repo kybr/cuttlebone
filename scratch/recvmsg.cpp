@@ -8,6 +8,8 @@
 #define LOG_FILE ("recv.txt")
 #include "Cuttlebone/Log.hpp"
 
+using namespace cuttlebone;
+
 #define N (2048)
 
 int main() {

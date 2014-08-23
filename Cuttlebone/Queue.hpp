@@ -6,6 +6,8 @@
 #include <type_traits>  // for is_pod
 #include <stdlib.h>     // for size_t
 
+namespace cuttlebone {
+
 template <typename DATA, size_t SIZE = 5>
 class Queue {
   //  static_assert(std::is_pod<DATA>::value, "DATA must be a POD type.");
@@ -48,5 +50,7 @@ class Queue {
     return true;
   }
 };
+
+}  // cuttlebone
 
 #endif

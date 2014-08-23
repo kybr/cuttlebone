@@ -7,6 +7,8 @@
 
 #include "Cuttlebone/Log.hpp"
 
+namespace cuttlebone {
+
 template <unsigned SIZE>
 struct Packet {
   struct Header {
@@ -99,5 +101,7 @@ struct PacketTaker {
     return true;
   }
 };
+
+}  // cuttlebone
 
 #endif

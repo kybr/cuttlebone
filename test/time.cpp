@@ -3,6 +3,8 @@
 #include <unistd.h>  // usleep
 using namespace std;
 
+using namespace cuttlebone;
+
 int main() {
   Timestamp<> t;
   cout << t.stamp() << endl;

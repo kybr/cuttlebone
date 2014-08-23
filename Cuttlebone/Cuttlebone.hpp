@@ -12,6 +12,8 @@
 #include <thread>
 using namespace std;
 
+namespace cuttlebone {
+
 template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059,
           unsigned LITTLE_WAIT_TIME_US = 100>
 struct Maker : Timer {
@@ -283,5 +285,7 @@ struct ManualTaker {
     return popCount;
   }
 };
+
+}  // cuttlebone
 
 #endif

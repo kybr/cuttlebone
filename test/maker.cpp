@@ -1,6 +1,8 @@
 //#define LOG_FILE ("/tmp/log.txt")
 #include "Cuttlebone/Cuttlebone.hpp"
 
+using namespace cuttlebone;
+
 struct State {
   int data[100];
 };

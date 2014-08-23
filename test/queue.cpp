@@ -6,6 +6,8 @@
 #include <string.h>
 using namespace std;
 
+using namespace cuttlebone;
+
 //#include <cstddef>
 //#include <string>
 //#include <stdlib.h>

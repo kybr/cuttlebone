@@ -2,6 +2,8 @@
 #include "Cuttlebone/Cuttlebone.hpp"
 #include <unistd.h>  // usleep
 
+using namespace cuttlebone;
+
 struct State {
   int data[100];
 };

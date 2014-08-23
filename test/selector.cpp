@@ -2,6 +2,8 @@
 #include <iostream>
 using namespace std;
 
+using namespace cuttlebone;
+
 struct App : Selector<App> {
   unsigned char* buffer;
   void onNewBuffer() {

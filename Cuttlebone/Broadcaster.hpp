@@ -11,6 +11,8 @@
 #include <cassert>
 #include "Cuttlebone/Log.hpp"
 
+namespace cuttlebone {
+
 struct Broadcaster {
   struct sockaddr_in address;
   int fileDescriptor;
@@ -52,5 +54,7 @@ struct Broadcaster {
     }
   }
 };
+
+}  // cuttlebone
 
 #endif

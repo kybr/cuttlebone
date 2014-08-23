@@ -1,6 +1,8 @@
 #include "Cuttlebone/Receiver.hpp"
 #include <unistd.h>  // sleep()
 
+using namespace cuttlebone;
+
 unsigned char* buffer;
 
 int main(int argc, char* argv[]) {

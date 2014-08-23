@@ -3,6 +3,8 @@
 #include <stdlib.h>
 using namespace std;
 
+using namespace cuttlebone;
+
 struct State {
   unsigned n;
   char data[12345];

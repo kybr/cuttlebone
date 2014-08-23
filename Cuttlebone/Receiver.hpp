@@ -10,6 +10,8 @@
 #include <cassert>
 #include "Cuttlebone/Log.hpp"
 
+namespace cuttlebone {
+
 struct Receiver {
   int fileDescriptor;
 
@@ -81,5 +83,7 @@ struct Receiver {
     }
   }
 };
+
+}  // cuttlebone
 
 #endif

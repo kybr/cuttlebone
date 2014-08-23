@@ -16,6 +16,8 @@ using namespace std;
 //#define DONT_COMPILE_LOG // like LOG never existed
 #include "Cuttlebone/Log.hpp"
 
+using namespace cuttlebone;
+
 #define MAXIMUM (20)
 
 int main(int argc, char* argv[]) {

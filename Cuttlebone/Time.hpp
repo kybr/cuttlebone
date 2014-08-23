@@ -5,6 +5,8 @@
 using namespace std;
 using namespace std::chrono;
 
+namespace cuttlebone {
+
 template <typename CLOCK = high_resolution_clock>
 struct Timestamp {
   static time_point<CLOCK>& born() {
@@ -28,4 +30,5 @@ struct Stopwatch {
   }
 };
 
+} // cuttlebone
 #endif

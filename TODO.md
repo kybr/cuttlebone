@@ -5,7 +5,7 @@
 - Plan pure c implementation
 
 - make tests for these:
-  * App.hpp : Maker, Taker, ManualTaker
+  * Cuttlebone.hpp : Maker, Taker, ManualTaker
   * Broadcaster.hpp : Broadcaster
   * Configuration.hpp : Configuration
   * Log.hpp : LOG
@@ -17,5 +17,4 @@
   * Timer.hpp : Timer
 
 - remove these deprecated items
-  * al_BroadcastOmniApp.hpp
   * Selector.hpp

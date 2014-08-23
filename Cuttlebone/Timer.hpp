@@ -15,6 +15,8 @@
 #warn "this system is not known"
 #endif
 
+namespace cuttlebone {
+
 struct Timer;
 Timer* that;
 #ifdef _WIN32
@@ -93,4 +95,6 @@ void func(int) { that->onTimer(); }
 #elif __APPLE__
 void func(void*) { that->onTimer(); }
 #endif
+
+} // cuttlebone
 #endif  // __TIMER__

@@ -10,6 +10,8 @@
 #include <thread>
 #include <cassert>
 
+namespace cuttlebone {
+
 template <typename APP>
 struct Selector {
   std::thread t;
@@ -95,5 +97,7 @@ struct Selector {
     t.join();
   }
 };
+
+}  // cuttlebone
 
 #endif
