@@ -1,12 +1,12 @@
 //#define LOG_FILE ("/tmp/log.txt")
-#include "Cuttlebone/Help.hpp"
-#include <unistd.h>
+#include "Cuttlebone/Cuttlebone.hpp"
+#include <unistd.h>  // usleep
 
 struct State {
   int data[100];
 };
 
-struct MyApp : SubscriberManualPolling<State> {
+struct MyApp : ManualTaker<State> {
   State* state;
   MyApp() {
     shouldLog = true;

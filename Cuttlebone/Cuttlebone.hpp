@@ -2,19 +2,15 @@
 #define INCLUDE_APP_HPP
 
 #include "Cuttlebone/Broadcaster.hpp"
-#include "Cuttlebone/Configuration.hpp"
+#include "Cuttlebone/Log.hpp"
 #include "Cuttlebone/Packet.hpp"
 #include "Cuttlebone/Queue.hpp"
 #include "Cuttlebone/Receiver.hpp"
-#include "Cuttlebone/Selector.hpp"
 #include "Cuttlebone/Time.hpp"
 #include "Cuttlebone/Timer.hpp"
-#include "Cuttlebone/Log.hpp"
 
 #include <thread>
 using namespace std;
-
-
 
 template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059,
           unsigned LITTLE_WAIT_TIME_US = 100>

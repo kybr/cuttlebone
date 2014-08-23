@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 
-#include "Log.hpp"
+#include "Cuttlebone/Log.hpp"
 
 template <unsigned SIZE>
 struct Packet {
@@ -71,8 +71,7 @@ struct PacketTaker {
     report += to_string(frameNumber);
     report += " missing ";
     for (unsigned i = 0; i < TOTAL_PART_COUNT; ++i)
-      if (part[i] == 0)
-        report += to_string(i) + ' ';
+      if (part[i] == 0) report += to_string(i) + ' ';
     LOG("%s", report.c_str());
   }
 

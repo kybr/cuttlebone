@@ -49,11 +49,11 @@ using namespace std;
   do {           \
   } while (0)
 #elif defined LOG_SIMPLE
-#define LOG(...)          \
-  do {                    \
-    printf(__VA_ARGS__);  \
-    printf("\n");  \
-    fflush(stdout);       \
+#define LOG(...)         \
+  do {                   \
+    printf(__VA_ARGS__); \
+    printf("\n");        \
+    fflush(stdout);      \
   } while (0)
 #else
 #define LOG(...)                                                       \

@@ -74,7 +74,8 @@ struct Timer {
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     // this only works on Mavericks (OSX 10.9)
-    //timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, DISPATCH_TIMER_STRICT, queue);
+    // timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0,
+    // DISPATCH_TIMER_STRICT, queue);
     if (!timer) exit(-1);
     dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, interval, leyway);
     dispatch_source_set_event_handler_f(timer, func);

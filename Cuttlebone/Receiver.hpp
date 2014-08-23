@@ -24,7 +24,8 @@ struct Receiver {
       // magic
       //
       int window = 16777216;
-      if (setsockopt(fileDescriptor, SOL_SOCKET, SO_RCVBUF, &window, sizeof(int)) == -1) {
+      if (setsockopt(fileDescriptor, SOL_SOCKET, SO_RCVBUF, &window,
+                     sizeof(int)) == -1) {
         fprintf(stderr, "Error setting socket opts: %s\n", strerror(errno));
       }
       printf("%d byte receive buffer (aka \"window\")\n", window);

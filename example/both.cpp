@@ -1,5 +1,5 @@
 //#define LOG_FILE ("/tmp/log.txt")
-#include "Cuttlebone/App.hpp"
+#include "Cuttlebone/Cuttlebone.hpp"
 
 struct State {
   int data[100];

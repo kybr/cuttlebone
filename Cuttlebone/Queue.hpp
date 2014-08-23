@@ -2,7 +2,7 @@
 #define __QUEUE__
 
 #include <atomic>
-#include <cstring> // memcpy
+#include <cstring>      // memcpy
 #include <type_traits>  // for is_pod
 #include <stdlib.h>     // for size_t
 
