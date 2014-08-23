@@ -2,6 +2,7 @@
 #define INCLUDE_APP_HPP
 
 #include "Cuttlebone/Broadcaster.hpp"
+#include "Cuttlebone/Stats.hpp"
 #include "Cuttlebone/Log.hpp"
 #include "Cuttlebone/Packet.hpp"
 #include "Cuttlebone/Queue.hpp"
