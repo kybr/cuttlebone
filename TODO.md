@@ -4,10 +4,11 @@
 - Plan java implementation
 - Plan pure c implementation
 
+- Use Timer to make a "Throttler" class for limiting throughput/CPU
+
 - make tests for these:
-  * Cuttlebone.hpp : Maker, Taker, ManualTaker
+  * Cuttlebone.hpp : Maker, Taker
   * Broadcaster.hpp : Broadcaster
-  * Configuration.hpp : Configuration
   * Log.hpp : LOG
   * Packet.hpp : PacketMaker, PacketTaker
   * Queue.hpp : Queue

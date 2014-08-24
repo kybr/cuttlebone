@@ -16,13 +16,6 @@ using namespace std;
 
 namespace cuttlebone {
 
-// TODO
-// - Simple Maker/Taker with no Timers or loops, just start/stop
-// - MakerApp/TakerApp using AppLoop abstraction
-// - Factor out lambdas for broadcasting and receiving
-// - Use Timer to make a "Throttler" class for limiting throughput/CPU
-//
-
 template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059>
 class Maker {
   const char* broadcastIp;
@@ -195,6 +188,7 @@ class TakerApp : public AppLoop {
 
   virtual void loop() {
     int popCount = taker.get(*state);
+    // XXX maybe only call got if popCount > 0
     got(*state, 1.0, popCount);
     usleep(WAIT_TIME_US);
   }
