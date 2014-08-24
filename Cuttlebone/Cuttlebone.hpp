@@ -15,6 +15,13 @@ using namespace std;
 
 namespace cuttlebone {
 
+// TODO
+// - Simple Maker/Taker with no Timers or loops, just start/stop
+// - MakerApp/TakerApp using AppLoop abstraction
+// - Factor out lambdas for broadcasting and receiving
+// - Use Timer to make a "Throttler" class for limiting throughput/CPU
+//
+
 template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059,
           unsigned LITTLE_WAIT_TIME_US = 100>
 struct Maker : Timer {
