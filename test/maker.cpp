@@ -3,24 +3,21 @@
 
 using namespace cuttlebone;
 
+#include <unistd.h>  // usleep
+
 struct State {
   int data[100];
 };
 
-struct MyApp : Maker<State> {
-  MyApp() {
-    shouldLog = true;
-    LOG("MyApp() - State is %d bytes", sizeof(State));
-  }
-  virtual void setup(State& state) {
-    LOG("setup()");
-    state.data[0] = 0;
-  }
-  virtual void update(float dt, State& state) { state.data[0]++; }
-};
-
 int main() {
-  LOG("main()");
-  MyApp app;
-  app.start();
+  Maker<State> maker;
+  maker.shouldLog = true;
+  State* state = new State;
+  state->data[0] = 1;
+  maker.start();
+  while (true) {
+    maker.set(*state);
+    state->data[0]++;
+    usleep(500000);
+  }
 }

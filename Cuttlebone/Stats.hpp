@@ -4,9 +4,9 @@
 namespace cuttlebone {
 
 struct Stats {
-  const char* header;
   int count;
   float period;
+  const char* header;
   Stats(const char* header = "FPS") : count(0), period(0), header(header) {}
   void operator()(float dt) {
     count++;

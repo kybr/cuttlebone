@@ -1,6 +1,7 @@
 #ifndef INCLUDE_APP_HPP
 #define INCLUDE_APP_HPP
 
+#include "Cuttlebone/AppLoop.hpp"
 #include "Cuttlebone/Broadcaster.hpp"
 #include "Cuttlebone/Stats.hpp"
 #include "Cuttlebone/Log.hpp"
@@ -23,24 +24,22 @@ namespace cuttlebone {
 //
 
 template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059>
-struct Maker {
-
+class Maker {
   const char* broadcastIp;
-  bool shouldLog;
   bool done;
   bool waitingToStart;
   thread broadcast;
   Queue<STATE> queue;
-  STATE* state;
 
-  virtual void set() { queue.push(*state); }
+ public:
+  bool shouldLog;
+  virtual void set(STATE& state) { queue.push(state); }
 
   Maker(const char* broadcastIp = "127.0.0.1")
       : broadcastIp(broadcastIp),
-        shouldLog(false),
         done(false),
         waitingToStart(true),
-        state(new STATE) {}
+        shouldLog(false) {}
 
   virtual void start() {
     broadcast = thread([&]() {
@@ -76,23 +75,22 @@ struct Maker {
 };
 
 template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059>
-struct Taker {
-
-  bool shouldLog;
+class Taker {
   bool done;
   bool waitingToStart;
   thread receive;
   Queue<STATE> queue;
-  STATE* state;
 
-  virtual int get() {
+ public:
+  bool shouldLog;
+
+  virtual int get(STATE& state) {
     int popCount = 0;
-    while (queue.pop(*state)) popCount++;
+    while (queue.pop(state)) popCount++;
     return popCount;
   }
 
-  Taker()
-      : shouldLog(false), done(false), waitingToStart(true), state(new STATE) {}
+  Taker() : done(false), waitingToStart(true), shouldLog(false) {}
 
   virtual void start() {
     receive = thread([&]() {
@@ -100,9 +98,6 @@ struct Taker {
       receiver.init(PORT, false);
       Packet<PACKET_SIZE> p;
       STATE* localState = new STATE;
-
-      while (waitingToStart)
-        usleep(LITTLE_WAIT_TIME_US);
 
       while (!done) {
 
@@ -135,7 +130,7 @@ struct Taker {
         if (shouldLog)
           LOG("got packet %d", p.header.frameNumber);
 
-        queue.push(*state);
+        queue.push(*localState);
       }
 
       delete localState;
@@ -150,42 +145,65 @@ struct Taker {
   }
 };
 
-template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059>
-struct MakerApp : AppLoop {
-  virtual void init(STATE& state) = 0;
-  virtual void update(STATE& state) = 0;
+template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059,
+          unsigned WAIT_TIME_US = 1000>
+class MakerApp : public AppLoop {
+  Maker<STATE, PACKET_SIZE, PORT> maker;
+  STATE* state;
+  // XXX might want this later
+  // STATE* previousState;
 
   virtual void setup() {
-    // XXX ordering?
+    // XXX should this go in the constructor?
+    //
+    state = new STATE;
+
+    // XXX need to think about the order of events here
+    //
     init(*state);
-    MakerApp::start();
+
+    // XXX should we push/send/set the initial state right now?
+    //
+    maker.start();
   }
 
   virtual void loop() {
     update(*state);
-    MakerApp::set();
+    maker.set(*state);
+    usleep(WAIT_TIME_US);
   }
 
-  virtual void cleanup() { MakerApp::stop(); }
+  virtual void cleanup() { maker.stop(); }
+
+ public:
+  virtual void init(STATE& state) = 0;
+  virtual void update(STATE& state) = 0;
 };
 
-template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059>
-struct TakerApp : AppLoop {
-  virtual void started() = 0;
-  virtual void got(STATE& state, double dt, int popCount) = 0;
+template <typename STATE, unsigned PACKET_SIZE = 1400, unsigned PORT = 63059,
+          unsigned WAIT_TIME_US = 1000>
+class TakerApp : public AppLoop {
+  Taker<STATE, PACKET_SIZE, PORT> taker;
+  STATE* state;
 
   virtual void setup() {
+    state = new STATE;
     // XXX ordering?
     started();
-    TakerApp::start();
+    taker.start();
   }
 
   virtual void loop() {
-    int popCount = TakerApp::get();
+    int popCount = taker.get(*state);
     got(*state, 1.0, popCount);
+    usleep(WAIT_TIME_US);
   }
 
-  virtual void cleanup() { TakerApp::stop(); }
+  virtual void cleanup() { taker.stop(); }
+
+ public:
+  virtual void started() = 0;
+  virtual void got(STATE& state, double dt, int popCount) = 0;
 };
 
 }  // cuttlebone
