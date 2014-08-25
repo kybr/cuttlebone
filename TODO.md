@@ -1,21 +1,12 @@
 # TODO
 
-- Documentation on HOWTO integrate with AlloSystem and Cuttlefish
-- Plan java implementation
-- Plan pure c implementation
-
-- Use Timer to make a "Throttler" class for limiting throughput/CPU
-
-- make tests for these:
-  * Cuttlebone.hpp : Maker, Taker
-  * Broadcaster.hpp : Broadcaster
-  * Log.hpp : LOG
-  * Packet.hpp : PacketMaker, PacketTaker
-  * Queue.hpp : Queue
-  * Receiver.hpp : Receiver
-  * Stats.hpp : Stats
-  * Time.hpp : Timestamp, Stopwatch
-  * Timer.hpp : Timer
-
-- remove these deprecated items
-  * Selector.hpp
+- doxygen comments
+- re-write Log using variadic templates
+- HOWTO on AlloSystem / Cuttlefish integration
+- pure java implementation
+- pure c implementation (started.. see scratch/c11)
+- use Timer to make a simple timed App
+- use Delay-Locked-Loop to make "Throttler" class for limiting throughput/CPU without spinning
+- improve Stats class
+- Windows build
+- remove Selector.hpp

@@ -58,7 +58,7 @@ using namespace std;
 #else
 #define LOG(...)                                                       \
   do {                                                                 \
-    Log<>::instance().report(std::this_thread::get_id(), __VA_ARGS__); \
+    cuttlebone::Log<>::instance().report(std::this_thread::get_id(), __VA_ARGS__); \
   } while (0)
 #endif
 
