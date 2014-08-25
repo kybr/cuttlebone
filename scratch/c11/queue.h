@@ -1,7 +1,7 @@
 #ifndef CB_QUEUE_C
 #define CB_QUEUE_C
 
-#include <stdlib.h> // size_t
+#include <stdlib.h>  // size_t
 
 typedef struct q queue_t;
 queue_t* queue_initialize(size_t capacity, size_t data_size);

@@ -1,8 +1,8 @@
 #include "queue.h"
 #include "stdatomic.h"
-#include <stdlib.h> // size_t
+#include <stdlib.h>  // size_t
 #include <string.h>  // memcpy
-#include <stdio.h>  // printf
+#include <stdio.h>   // printf
 
 typedef struct q {
   size_t capacity, data_size;
@@ -17,8 +17,8 @@ size_t nlpo2(size_t x) {
   x |= (x >> 4);
   x |= (x >> 8);
   x |= (x >> 16);
-  return (x+1);
-} 
+  return (x + 1);
+}
 
 queue_t* queue_initialize(size_t capacity, size_t data_size) {
   queue_t* queue = malloc(sizeof(queue_t));
@@ -39,7 +39,8 @@ int push(queue_t* queue, const void* item) {
       atomic_load_explicit(&queue->tail, memory_order_relaxed);
   const size_t next_tail = (current_tail + 1) & (queue->capacity - 1);
   if (next_tail != atomic_load_explicit(&queue->head, memory_order_acquire)) {
-    memcpy(queue->data + (current_tail * queue->data_size), item, queue->data_size);
+    memcpy(queue->data + (current_tail * queue->data_size), item,
+           queue->data_size);
     atomic_store_explicit(&queue->tail, next_tail, memory_order_release);
     return 1;
   }
@@ -51,8 +52,10 @@ int pop(queue_t* queue, void* item) {
       atomic_load_explicit(&queue->head, memory_order_relaxed);
   if (current_head == atomic_load_explicit(&queue->tail, memory_order_acquire))
     return 0;  // empty queue
-  memcpy(item, queue->data + (current_head * queue->data_size), queue->data_size);
-  atomic_store_explicit(&queue->head, (current_head + 1) & (queue->capacity - 1),
+  memcpy(item, queue->data + (current_head * queue->data_size),
+         queue->data_size);
+  atomic_store_explicit(&queue->head,
+                        (current_head + 1) & (queue->capacity - 1),
                         memory_order_release);
   return 1;
 }
