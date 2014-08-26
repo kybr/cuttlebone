@@ -2,6 +2,7 @@
 
 - doxygen comments
 - re-write Log using variadic templates
+- Log: optionally move time-stamp call (blocking) to priority queue side
 - HOWTO on AlloSystem / Cuttlefish integration
 - pure java implementation
 - pure c implementation (started.. see scratch/c11)
