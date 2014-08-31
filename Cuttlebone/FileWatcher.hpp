@@ -3,7 +3,7 @@
 
 namespace cuttlebone {
 
-class FileWatcherImpl;
+struct FileWatcherImpl;
 class FileWatcher {
   FileWatcherImpl* impl;
 

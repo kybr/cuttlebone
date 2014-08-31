@@ -34,7 +34,7 @@ static void myCallbackFunction(ConstFSEventStreamRef streamRef,
                                void *eventPaths,
                                const FSEventStreamEventFlags eventFlags[],
                                const FSEventStreamEventId eventIds[]) {
-  char **paths = (char **)eventPaths;  // cast to stop warning
+  //char **paths = (char **)eventPaths;  // cast to stop warning
 
   for (int i = 0; i < numEvents; i++) {
     if (eventFlags[i] & kFSEventStreamEventFlagItemModified) {

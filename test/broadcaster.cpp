@@ -36,6 +36,7 @@ int main(int argc, char* argv[]) {
 
   App app;
   app.init(packetSize, ip, port);
-  app.start(timerPeriod);
+  app.rate(timerPeriod);
+  app.start();
   getchar();
 }

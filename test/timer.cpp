@@ -1,5 +1,6 @@
 #include "Cuttlebone/Timer.hpp"
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
 
 using namespace cuttlebone;
 
@@ -14,6 +15,7 @@ int main(int argc, char* argv[]) {
   if (argc > 1) timerPeriod = atof(argv[1]);
   printf("usage: %s timerPeriod\n", argv[0]);
   App app;
-  app.start(timerPeriod);
+  app.rate(timerPeriod);
+  app.start();
   getchar();
 }

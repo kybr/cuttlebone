@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(cuttlebone)
+set(CMAKE_BUILD_TYPE Release)
 
 #set(CMAKE_CXX_FLAGS                "-Wall -std=c++11 -Wno-deprecated-declarations")
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
@@ -13,6 +14,8 @@ set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/")
+
+set(CMAKE_MACOSX_RPATH 0)
 
 #find_package(Crypto REQUIRED)
 #set(libraries ${libraries} ${CRYPTO_LIBRARIES})
@@ -30,6 +33,12 @@ set(libraries ${CMAKE_THREAD_LIBS_INIT} ${libraries})
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(libraries ${libraries} rt)
 endif()
+
+aux_source_directory(source/macos library_source)
+add_library(${PROJECT_NAME} SHARED ${library_source})
+find_library(core_services CoreServices)
+target_link_libraries(${PROJECT_NAME} ${core_services})
+set(libraries ${PROJECT_NAME} ${libraries})
 
 aux_source_directory(test source_list)
 aux_source_directory(example source_list)
