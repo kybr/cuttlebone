@@ -12,7 +12,7 @@ CXX11 += -stdlib=libc++
 
 _: watch
 
-watch: main.o FileWatcherImplOSX.o
+watch: main.o FileWatcherMacos.o
 	clang -o $@ $^ $(LINKER)
 
 %.o :: %.mm
@@ -24,4 +24,4 @@ watch: main.o FileWatcherImplOSX.o
 	clang -x c++ $(CXX11) -c $< -o $@ $(CXXFLAGS)
 
 clean:
-	rm -rf watch main.o FileWatcherImplOSX.o
+	rm -rf watch main.o FileWatcherMacos.o

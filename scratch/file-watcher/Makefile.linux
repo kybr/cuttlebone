@@ -1,0 +1,17 @@
+.SUFFIXES:
+.PHONY: _
+
+LINKER +=
+CXX11 += -std=c++11
+#CXX11 += -stdlib=libc++
+
+_: watch
+
+watch: main.o FileWatcherLinux.o
+	g++ -o $@ $^ $(LINKER)
+
+%.o :: %.cpp
+	g++ -x c++ $(CXX11) -c $< -o $@ $(CXXFLAGS)
+
+clean:
+	rm -rf watch main.o FileWatcherLinux.o
