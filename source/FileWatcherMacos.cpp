@@ -1,8 +1,11 @@
-#include "FileWatcher.hpp"
+#include "Cuttlebone/FileWatcher.hpp"
+
 #include <CoreServices/CoreServices.h>
 #include <vector>
 #include <cassert>
 using namespace std;
+
+namespace cuttlebone {
 
 struct FileWatcherImpl {
   vector<const char *> paths;
@@ -83,3 +86,5 @@ void FileWatcher::start() {
 }
 
 void FileWatcher::stop() { CFRunLoopStop(runLoopRef); }
+
+}  // cuttlebone
