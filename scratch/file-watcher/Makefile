@@ -1,9 +1,6 @@
 .SUFFIXES:
 .PHONY: _
 
-FRAMEWORKS :=
-CXXFLAGS :=
-LINKER :=
 FRAMEWORKS += -framework CoreServices
 LINKER += $(FRAMEWORKS)
 LINKER += -lc++

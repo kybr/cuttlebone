@@ -16,8 +16,7 @@ void FileWatcher::watch(const char *filePath) {
   if (!hasRun) {
     hasRun = true;
     impl->paths.push_back(filePath);
-  }
-  else {
+  } else {
     // XXX this code is incomplete
     assert(false);
   }
@@ -37,10 +36,10 @@ static void myCallbackFunction(ConstFSEventStreamRef streamRef,
   for (int i = 0; i < numEvents; i++) {
     if (eventFlags[i] & kFSEventStreamEventFlagItemModified) {
       that->onModify((const char *)clientCallBackInfo);
-      // that->onModify(paths[i]);
-    } else {
-      printf("non-modify event on %s\n", paths[i]);
     }
+    // else {
+    //  printf("non-modify event on %s\n", paths[i]);
+    //}
   }
 }
 
@@ -55,10 +54,10 @@ void FileWatcher::start() {
 
   memset(&context, 0, sizeof(context));
   context.info = (void *)impl->paths[0];
-//  context.version = 0;
-//  context.retain = NULL;
-//  context.release = NULL;
-//  context.copyDescription = NULL;
+  //  context.version = 0;
+  //  context.retain = NULL;
+  //  context.release = NULL;
+  //  context.copyDescription = NULL;
 
   CFArrayRef pathsToWatch =
       CFArrayCreate(NULL, (const void **)&mypath, 1, NULL);
