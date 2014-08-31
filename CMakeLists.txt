@@ -34,10 +34,22 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(libraries ${libraries} rt)
 endif()
 
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 aux_source_directory(source/macos library_source)
-add_library(${PROJECT_NAME} SHARED ${library_source})
 find_library(core_services CoreServices)
-target_link_libraries(${PROJECT_NAME} ${core_services})
+set(library_library ${library_library} ${core_services})
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+aux_source_directory(source/linux library_source)
+#find_library(core_services CoreServices)
+#set(library_library ${library_library} ${core_services})
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+add_library(${PROJECT_NAME} SHARED ${library_source})
+target_link_libraries(${PROJECT_NAME} ${library_library})
+
 set(libraries ${PROJECT_NAME} ${libraries})
 
 aux_source_directory(test source_list)
