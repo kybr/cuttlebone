@@ -1,5 +1,7 @@
-#ifndef CB_FILE_WATCHER__
-#define CB_FILE_WATCHER__
+#ifndef CUTTLEBONE_FILE_WATCHER__
+#define CUTTLEBONE_FILE_WATCHER__
+
+namespace cuttlebone {
 
 class FileWatcherImpl;
 class FileWatcher {
@@ -8,10 +10,12 @@ class FileWatcher {
  public:
   FileWatcher();
   virtual ~FileWatcher();
-  virtual void start();
-  virtual void stop();
+  void start();
+  void stop();
   void watch(const char* filePath);
   virtual void onModify(const char* filePath) = 0;
 };
+
+}  // cuttlebone
 
 #endif

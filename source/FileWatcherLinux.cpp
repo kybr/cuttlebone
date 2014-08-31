@@ -1,4 +1,4 @@
-#include "FileWatcher.hpp"
+#include "Cuttlebone/FileWatcher.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +14,8 @@ using namespace std;
 
 #define EVENT_SIZE (sizeof(struct inotify_event))
 #define BUF_LEN (1024 * (EVENT_SIZE + 16))
+
+namespace cuttlebone {
 
 struct FileWatcherImpl {
   vector<const char *> paths;
@@ -68,3 +70,5 @@ void FileWatcher::stop() {
   inotify_rm_watch(impl->fd, impl->wd);
   close(impl->fd);
 }
+
+}  // cuttlebone
