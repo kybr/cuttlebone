@@ -1,4 +1,6 @@
-#include "FileWatcher.hpp"
+#include "Cuttlebone/FileWatcher.hpp"
+using namespace cuttlebone;
+
 #include <iostream>
 using namespace std;
 

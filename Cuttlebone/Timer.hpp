@@ -3,7 +3,7 @@
 
 namespace cuttlebone {
 
-class TimerImpl;
+struct TimerImpl;
 class Timer {
   TimerImpl* impl;
 
