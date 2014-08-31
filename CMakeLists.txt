@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 project(cuttlebone)
 
 #set(CMAKE_CXX_FLAGS                "-Wall -std=c++11 -Wno-deprecated-declarations")
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -std=c++11 -Wno-deprecated-declarations")
+else()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -Wno-deprecated-declarations")
+endif()
 set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
 set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
@@ -20,8 +24,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mo
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ms_demos)
 
-if(UNIX AND NOT APPLE)
-  set(libraries ${libraries} rt pthread)
+find_package(Threads REQUIRED)
+set(libraries ${CMAKE_THREAD_LIBS_INIT} ${libraries})
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  set(libraries ${libraries} rt)
 endif()
 
 aux_source_directory(test source_list)
