@@ -1,58 +1,57 @@
 #include "Cuttlebone/Timer.hpp"
+#include "Cuttlebone/Log.hpp"
 #include <stdlib.h>
 #include <time.h>
 #include <signal.h>
-#include <assert.h>
 #include <pthread.h>
 
 namespace cuttlebone {
 
-Timer* that;
-static void func(int);
+void callbackFunction(union sigval argument);
 
 struct TimerImpl {
+  Timer* timer;
   double period;
-  timer_t timerid;
-  struct itimerspec timer_settings;
-  struct sigevent sevp;
+  struct sigevent linuxSigEvent;
+  struct itimerspec linuxTimerSpec;
+  timer_t linuxTimer;
 
-  TimerImpl(Timer* t) : period(1.0 / 60) { that = t; }
+  TimerImpl(Timer* timer) : timer(timer), period(1.0 / 60) {
+    memset(&linuxSigEvent, 0, sizeof(struct sigevent));
+    memset(&linuxTimerSpec, 0, sizeof(struct itimerspec));
+  }
 
-  void rate(double period) {}
+  void stop() { timer_delete(linuxTimer); }
 
   void start() {
-    sevp.sigev_notify = SIGEV_SIGNAL;
-    sevp.sigev_signo = SIGUSR1;
-    sevp.sigev_value.sival_ptr = (void*)this;
-    sevp.sigev_notify_attributes = 0;  // important
-    signal(SIGUSR1, func);
-    assert(timer_create(CLOCK_REALTIME, &sevp, &timerid) == 0);
+    linuxSigEvent.sigev_notify = SIGEV_THREAD;
+    linuxSigEvent.sigev_notify_function = callbackFunction;
+    linuxSigEvent.sigev_value.sival_ptr = (void*)timer;
+
+    timer_create(CLOCK_REALTIME, &linuxSigEvent, &linuxTimer);
+    // timer_create(CLOCK_MONOTONIC, &linuxSigEvent, &linuxTimer);
 
     int seconds = (int)period;
     int nanoseconds = (period - (int)period) * 1000000000;
     if (nanoseconds > 999999999) nanoseconds = 999999999;
 
-    timer_settings.it_interval.tv_sec = seconds;
-    timer_settings.it_interval.tv_nsec = nanoseconds;
-    timer_settings.it_value.tv_sec = 0;
-    timer_settings.it_value.tv_nsec = 1;
-    assert(timer_settime(timerid, 0, &timer_settings, 0) == 0);
-  }
+    linuxTimerSpec.it_value.tv_sec = seconds;
+    linuxTimerSpec.it_value.tv_nsec = nanoseconds;
+    linuxTimerSpec.it_interval.tv_sec = linuxTimerSpec.it_value.tv_sec;
+    linuxTimerSpec.it_interval.tv_nsec = linuxTimerSpec.it_value.tv_nsec;
 
-  void stop() {
-    timer_settings.it_interval.tv_sec = 0;
-    timer_settings.it_interval.tv_nsec = 0;
-    timer_settings.it_value.tv_sec = 0;
-    timer_settings.it_value.tv_nsec = 0;
-    assert(timer_settime(timerid, 0, &timer_settings, 0) == 0);
+    timer_settime(linuxTimer, 0, &linuxTimerSpec, NULL);
   }
 };
 
+void callbackFunction(union sigval argument) {
+  ((Timer*)(argument.sival_ptr))->onTimer();
+}
+
 Timer::Timer() : impl(new TimerImpl(this)) {}
 Timer::~Timer() { delete impl; }
+void Timer::rate(double period) { impl->period = period; }
 void Timer::start() { impl->start(); }
 void Timer::stop() { impl->stop(); }
-void Timer::rate(double period) { impl->period = period; }
-static void func(int) { that->onTimer(); }
 
 }  // cuttlebone
