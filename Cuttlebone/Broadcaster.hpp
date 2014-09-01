@@ -23,7 +23,8 @@ struct Broadcaster {
 
     this->packetSize = packetSize;
 
-    assert((fileDescriptor = socket(AF_INET, SOCK_DGRAM, 0)) >= 0);
+    fileDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
+    assert(fileDescriptor >= 0);
 
     int broadcast = 1;
     setsockopt(fileDescriptor, SOL_SOCKET, SO_BROADCAST, &broadcast,

@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(cuttlebone)
+
+# XXX some stuff stopped working after i added this. i think that setting
+# CMAKE_BUILD_TYPE to "Release" compiles away asserts, which contained some
+# critical code. stupid, i know.
+#
 set(CMAKE_BUILD_TYPE Release)
 
 #set(CMAKE_CXX_FLAGS                "-Wall -std=c++11 -Wno-deprecated-declarations")
