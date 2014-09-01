@@ -7,7 +7,6 @@
 #include <cstdlib>       // linux
 #include <cstdio>        // linux
 #include <string>
-#include <cassert>
 #include "Cuttlebone/Log.hpp"
 
 namespace cuttlebone {
