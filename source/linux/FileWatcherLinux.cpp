@@ -18,7 +18,7 @@ using namespace std;
 namespace cuttlebone {
 
 struct FileWatcherImpl {
-  vector<const char *> paths;
+  vector<string> paths;
   int fd;
   int wd;
   char buffer[BUF_LEN];
@@ -33,7 +33,7 @@ void FileWatcher::watch(const char *filePath) {
   static bool hasRun = false;
   if (!hasRun) {
     hasRun = true;
-    impl->paths.push_back(filePath);
+    impl->paths.push_back(string(filePath));
   } else {
     // XXX this code is incomplete
     assert(false);
@@ -45,7 +45,7 @@ void FileWatcher::watch(const char *filePath) {
 void FileWatcher::start() {
   impl->fd = inotify_init();  // XXX inotify_init1(IN_NONBLOCK);
 
-  impl->wd = inotify_add_watch(impl->fd, impl->paths[0],
+  impl->wd = inotify_add_watch(impl->fd, impl->paths[0].c_str(),
                                IN_CLOSE_WRITE /* not IN_MODIFY */);
 
   while (!impl->done) {
@@ -59,7 +59,7 @@ void FileWatcher::start() {
       struct inotify_event *event = (struct inotify_event *)&impl->buffer[i];
       if ((event->len == 0) &&
           (event->mask & IN_CLOSE_WRITE /* not IN_MODIFY */))
-        this->onModify(impl->paths[0]);
+        this->onModify(impl->paths[0].c_str());
       i += EVENT_SIZE + event->len;
     }
   }
