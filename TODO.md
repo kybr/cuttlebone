@@ -1,5 +1,6 @@
 # TODO
 
+- determine (or even set) the MTU
 - doxygen comments
 - re-write Log using variadic templates
 - Log: optionally move time-stamp call (blocking) to priority queue side
