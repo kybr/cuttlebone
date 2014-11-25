@@ -26,9 +26,22 @@ struct Broadcaster {
     fileDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
     assert(fileDescriptor >= 0);
 
+/* XXX i'd like to do this, but it seems that OSX does not provide a way to ask what the MTU is.
+
+    int optval, optlen;
+    optlen = sizeof(optval);
+    if (getsockopt(fileDescriptor, SOL_SOCKET, SO_MAX_MSG_SIZE, (char*)&optval,
+                   &optlen) == 0)
+      if (optlen == sizeof(int)) {
+        LOG("MTU: %d", optval);
+      }
+*/
+
     int broadcast = 1;
     setsockopt(fileDescriptor, SOL_SOCKET, SO_BROADCAST, &broadcast,
                sizeof(broadcast));
+
+    // XXX check on broadcast with getsockopt
 
     if (useLargeWindow) {
       int window = 16777216;
@@ -51,7 +64,7 @@ struct Broadcaster {
     if (sendto(fileDescriptor, data, packetSize, 0, (struct sockaddr*)&address,
                sizeof(address)) >= 0) {
     } else {
-      LOG("failed to SEND packet");
+      LOG("failed to SEND packet. make sure MTU is larger than %u", packetSize);
     }
   }
 };
