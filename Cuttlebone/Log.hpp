@@ -159,6 +159,7 @@ struct Log {
 
     int q = queueThreadMap[tid];
 
+    // XXX bug here! user can give long strings that are not handled!
     char buffer[256];
     va_list args;
     va_start(args, format);
@@ -167,6 +168,7 @@ struct Log {
     va_end(args);
 
     sprintf(report.text, "%.8lf|%d|%s", report.time, q, buffer);
+    report.text[REPORT_LENGTH - 1] = '\0';
     queue[q].push(report);
   }
 };

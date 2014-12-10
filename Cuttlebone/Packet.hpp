@@ -69,11 +69,13 @@ struct PacketTaker {
   unsigned frameNumber;
 
   void summary() {
-    string report;
-    report += to_string(frameNumber);
-    report += " missing ";
+    unsigned missing = 0;
     for (unsigned i = 0; i < TOTAL_PART_COUNT; ++i)
-      if (part[i] == 0) report += to_string(i) + ' ';
+      if (part[i] == 0) missing++;
+    string report;
+    report += to_string(missing);
+    report += " missing from frame ";
+    report += to_string(frameNumber);
     LOG("%s", report.c_str());
   }
 
