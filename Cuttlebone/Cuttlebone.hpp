@@ -22,17 +22,18 @@ class Maker {
   bool done;
   bool waitingToStart;
   thread broadcast;
-  Queue<STATE> queue;
+  Queue<STATE>* queue;
 
  public:
   bool shouldLog;
-  virtual void set(STATE& state) { queue.push(state); }
+  virtual void set(STATE& state) { queue->push(state); }
 
   Maker(const char* broadcastIp = "127.0.0.1")
       : broadcastIp(broadcastIp),
         done(false),
         waitingToStart(true),
-        shouldLog(false) {}
+        shouldLog(false),
+        queue(new Queue<STATE>) {}
 
   virtual void start() {
     broadcast = thread([&]() {
@@ -44,7 +45,7 @@ class Maker {
 
       while (!done) {
         int popCount = 0;
-        while (queue.pop(*state))
+        while (queue->pop(*state))
           popCount++;
 
         if (popCount) {
@@ -72,18 +73,18 @@ class Taker {
   bool done;
   bool waitingToStart;
   thread receive;
-  Queue<STATE> queue;
+  Queue<STATE>* queue;
 
  public:
   bool shouldLog;
 
   virtual int get(STATE& state) {
     int popCount = 0;
-    while (queue.pop(state)) popCount++;
+    while (queue->pop(state)) popCount++;
     return popCount;
   }
 
-  Taker() : done(false), waitingToStart(true), shouldLog(false) {}
+  Taker() : done(false), waitingToStart(true), shouldLog(false), queue(new Queue<STATE>) {}
 
   virtual void start() {
     receive = thread([&]() {
@@ -123,7 +124,7 @@ class Taker {
         if (shouldLog)
           LOG("got packet %d", p.header.frameNumber);
 
-        queue.push(*localState);
+        queue->push(*localState);
       }
 
       delete localState;
