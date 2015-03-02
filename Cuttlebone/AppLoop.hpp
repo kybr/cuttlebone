@@ -16,14 +16,14 @@ namespace cuttlebone {
 //
 
 class AppLoop {
-  bool running = false;
+  bool running; // = false;
 
  public:
   virtual void setup() = 0;
   virtual void loop() = 0;
   virtual void cleanup() = 0;
 
-  AppLoop() {}
+  AppLoop() : running(false) {}
   virtual ~AppLoop() {}
 
   void start() {

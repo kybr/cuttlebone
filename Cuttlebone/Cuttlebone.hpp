@@ -32,8 +32,8 @@ class Maker {
       : broadcastIp(broadcastIp),
         done(false),
         waitingToStart(true),
-        shouldLog(false),
-        queue(new Queue<STATE>) {}
+        queue(new Queue<STATE>),
+        shouldLog(false) {}
 
   virtual void start() {
     broadcast = thread([&]() {
@@ -84,7 +84,7 @@ class Taker {
     return popCount;
   }
 
-  Taker() : done(false), waitingToStart(true), shouldLog(false), queue(new Queue<STATE>) {}
+  Taker() : done(false), waitingToStart(true), queue(new Queue<STATE>), shouldLog(false) {}
 
   virtual void start() {
     receive = thread([&]() {
