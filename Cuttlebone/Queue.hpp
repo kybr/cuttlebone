@@ -8,7 +8,7 @@
 
 namespace cuttlebone {
 
-template <typename DATA, size_t SIZE = 5>
+template <typename DATA, size_t SIZE = 10>
 class Queue {
   //  static_assert(std::is_pod<DATA>::value, "DATA must be a POD type.");
 
