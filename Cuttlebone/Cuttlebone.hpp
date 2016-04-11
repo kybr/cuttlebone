@@ -52,6 +52,8 @@ class Maker {
           if (shouldLog)
             LOG("sent packet %d", frame);
           PacketMaker<STATE, Packet<PACKET_SIZE> > packetMaker(*state, frame);
+
+          // XXX consider making this multithreaded. the timing should be measured, at least.
           while (packetMaker.fill(p))
             broadcaster.send((unsigned char*)&p);
           frame++;
@@ -95,12 +97,14 @@ class Taker {
 
       while (!done) {
 
+        // XXX make this timeout a parameter
         if (!receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f))
           continue;
 
       ABORT_FRAME:
         ;
         // wait until we're at the begining of a frame
+        // XXX is this really necessary? reconsider.
         if (p.header.partNumber != 0)
           continue;
 
@@ -110,7 +114,10 @@ class Taker {
         packetTaker.take(p);
 
         while (!packetTaker.isComplete()) {
+          // XXX make this timeout a parameter
           if (receiver.receive((unsigned char*)&p, PACKET_SIZE, 0.2f)) {
+
+            // XXX the semantics of this method are not clear. make clear.
             if (!packetTaker.take(p)) {
               // got a part from an unexpected frame before we finished this
               // frame

@@ -47,7 +47,7 @@ struct PacketMaker {
     else
       packet.header.partSize = PACKET::DATA_SIZE;
 
-    // what if this fails? when would it fail? how?
+    // XXX what if this fails? when would it fail? how?
     memcpy(packet.byte,
            (void*)(((unsigned long)&state) + (partNumber * PACKET::DATA_SIZE)),
            packet.header.partSize);
@@ -60,6 +60,7 @@ struct PacketMaker {
 template <typename STATE, typename PACKET>
 struct PacketTaker {
   enum {
+    // XXX what if sizeof STATE is an integer multiple of PACKET::DATA_SIZE
     TOTAL_PART_COUNT = 1 + sizeof(STATE) / PACKET::DATA_SIZE,
     LAST_DATA_SIZE = sizeof(STATE) % PACKET::DATA_SIZE
   };
@@ -67,6 +68,8 @@ struct PacketTaker {
   STATE& state;
   unsigned char part[TOTAL_PART_COUNT];
   unsigned frameNumber;
+
+  // XXX add a log for missing parts
 
   void summary() {
     unsigned missing = 0;
@@ -97,6 +100,7 @@ struct PacketTaker {
     return true;
   }
 
+  // XXX find a better way to do this. faster, cleaner.
   bool isComplete() {
     for (unsigned i = 0; i < TOTAL_PART_COUNT; ++i)
       if (part[i] != 1) return false;
