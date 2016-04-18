@@ -6,18 +6,21 @@ using namespace cuttlebone;
 #include <unistd.h>  // usleep
 
 struct State {
-  int data[100];
+  int frame;
+  char _[8 * 1024 * 1024 - 4];
 };
 
 int main() {
-  Maker<State> maker;
+  Maker<State, 64336> maker("192.168.10.255");
+  //Maker<State, 9184> maker("192.168.10.255");
   maker.shouldLog = true;
   State* state = new State;
-  state->data[0] = 1;
+  state->frame = 1;
   maker.start();
+printf("%d bytes\n", sizeof(State));
   while (true) {
     maker.set(*state);
-    state->data[0]++;
-    usleep(500000);
+    state->frame++;
+    usleep(50000);
   }
 }
