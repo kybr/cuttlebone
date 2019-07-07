@@ -1,5 +1,7 @@
 # Cuttlebone
 
+**This project is no longer maintained. See my new work-in-progress replacement <https://github.com/kybr/br>.**
+
 This is a framework / toolkit for developing distributing multimedia
 applications. Use the Maker<State> and Taker<State> abstractions to distribute
 and collect application state information between apps on your wired network
