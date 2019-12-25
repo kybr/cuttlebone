@@ -7,6 +7,8 @@ project(cuttlebone)
 #
 set(CMAKE_BUILD_TYPE Release)
 
+option(CUTTLE_BUILD_TESTS_AND_EXAMPLES "Build unit tests and example files" ON)
+
 #set(CMAKE_CXX_FLAGS                "-Wall -std=c++11 -Wno-deprecated-declarations")
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
@@ -68,6 +70,7 @@ target_link_libraries(${PROJECT_NAME} ${library_library})
 
 set(libraries ${PROJECT_NAME} ${libraries})
 
+if(CUTTLE_BUILD_TESTS_AND_EXAMPLES)
 aux_source_directory(test source_list)
 aux_source_directory(example source_list)
 aux_source_directory(scratch source_list)
@@ -77,3 +80,4 @@ foreach(source_file ${source_list})
   add_executable(${target} ${source_file})
   target_link_libraries(${target} ${libraries})
 endforeach(source_file)
+endif(CUTTLE_BUILD_TESTS_AND_EXAMPLES)
